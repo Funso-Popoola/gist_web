@@ -1,0 +1,895 @@
+/*!
+ * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+ /* Login form style*/
+ @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+ *{margin:0;padding:0;}
+
+
+body {
+    min-width: 700px;
+}
+
+.button{
+  width:100px;
+  background:#3399cc;
+  display:block;
+  margin:0 auto;
+  margin-top:1%;
+  padding:10px;
+  text-align:center;
+  text-decoration:none;
+  color:#fff;
+  cursor:pointer;
+  transition:background .3s;
+  -webkit-transition:background .3s;
+}
+
+.button:hover{
+  background:#000;
+}
+
+#login{
+  width:420px;
+  margin:0 auto;
+  margin-top:15%;
+  margin-bottom:2%;
+  transition:opacity 1s;
+  -webkit-transition:opacity 1s;
+}
+#login_admin{
+  width:420px;
+  margin:0 auto;
+  margin-top:120px;
+  margin-right: 120px;
+  margin-bottom:2%;
+  transition:opacity 1s;
+  -webkit-transition:opacity 1s;
+}
+
+/*#triangle{
+  width:0;
+  border-top:12x solid transparent;
+  border-right:12px solid transparent;
+  border-bottom:12px solid #B3B3B3;
+  border-left:12px solid transparent;
+  margin:0 auto;
+}*/
+
+#login h1{
+ background-color:#336699;
+  padding:20px 0;
+  font-size:140%;
+  font-weight:bold;
+  text-align:center;
+  color:#fff;
+  font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+#login_admin h1{
+ background-color:#336699;
+  padding:20px 0;
+  font-size:140%;
+  font-weight:bold;
+  text-align:center;
+  color:#fff;
+  font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+#form{
+  padding:6% 4%;
+  background: #fafafa;
+}
+
+input[type="text"],input[type="password"]{
+  width:100%;
+  background:#fff;
+  margin-bottom:4%;
+  border:1px solid #ccc;
+  padding:4%;
+  font-size:95%;
+  color:#555;
+}
+#news_image{
+    height: 200px !important;
+    width: auto;
+    margin-left: 200px;
+    text-align: center;
+
+
+
+}
+
+#newsrow{
+
+  margin-top: 2%;
+}
+
+.forgot{
+  margin: 0px 0px 30px 5px;
+}
+
+input[type="submit"], input[type="button"]{
+  width:100%;
+  background-color:#336699;
+  border:0;
+  margin-top: 20px;
+  padding:4%;
+  font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size:100%;
+  font-weight: bold;
+  color:#fff;
+  cursor:pointer;
+  transition:background .3s;
+  -webkit-transition:background .3s;
+}
+
+input[type="submit"]:hover{
+  background:gray;
+}
+
+
+
+/* end of login style*/
+
+
+
+#search {
+  border-color: gray;
+  background: transparent;
+  border-radius: 0px
+}
+
+
+
+
+/* Toggle Styles */
+
+#wrapper {
+  padding-left: 0;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+  padding-left: 250px;
+}
+
+#sidebar-wrapper {
+  z-index: 1000;
+  position: fixed;
+  left: 250px;
+  width: 0;
+  height: 100%;
+  margin-left: -250px;
+  overflow-y: auto;
+  background: #000;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  width: 250px;
+}
+
+#page-content-wrapper {
+  width: 100%;
+  position: absolute;
+  padding: 15px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+  position: absolute;
+  margin-right: -250px;
+}
+
+
+
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: 250px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-nav li {
+  text-indent: 20px;
+  line-height: 40px;
+}
+
+.sidebar-nav li a {
+  display: block;
+  text-decoration: none;
+  color: #999999;
+}
+
+.sidebar-nav li a:hover {
+  text-decoration: none;
+  color: #fff;
+  background: rgba(255,255,255,0.2);
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+  text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+  height: 65px;
+  font-size: 18px;
+  line-height: 60px;
+  display: inline;
+  margin-bottom: 20px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+  color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+  color: #fff;
+  background: none;
+}
+
+@media(min-width:768px) {
+  #wrapper {
+    padding-left: 250px;
+  }
+
+  #wrapper.toggled {
+    padding-left: 0;
+  }
+
+  #sidebar-wrapper {
+    width: 250px;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    width: 0;
+  }
+
+  #page-content-wrapper {
+    padding: 20px;
+    position: relative;
+  }
+
+  #wrapper.toggled #page-content-wrapper {
+    position: relative;
+    margin-right: 0;
+  }
+
+  #menu-toggle{
+   display: none;
+ }
+}
+
+
+
+#link-font{
+
+  font-size: 95%;
+  font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-weight: bold;
+
+}
+
+#news-button{
+
+  padding: 20px 0px 10px 47px;
+  font-size: 15px;
+  color: brown;
+}
+#sidenav{
+
+  margin-top: 50px;
+  font-size: 12px;
+  padding: 10px 40px 40px 40px;
+}
+#side-news{
+
+  margin-top: 3.5%;
+}
+#side-newss{
+
+  margin-top: 3.5%;
+  font-size: 115%;
+  font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+
+#channelname{
+
+  color:#663333;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size: 92%;
+
+}
+
+#channelnam{
+  color: gray;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size: 85%;
+  margin-left: 2px;
+
+}
+
+#channelheading{
+font-family: "Comic Sans MS", cursive, sans-serif;
+font-size: 120%;
+}
+
+#channelhead{
+
+  color:#db0811; 
+  font-weight:bold;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 150%;
+}
+#trendss{
+
+  color:#db0811; 
+  font-weight:bold;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 150%;
+  margin-top: 2%;
+}
+
+ul{
+  list-style: none;
+}
+
+#sideinfo{
+
+  margin-top: 23%;
+}
+
+#sideinfo a{
+  font-size: 93%;
+  text-decoration: none;
+  font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  color: #9999FF;
+  font-weight: lighter;
+}
+
+#sideinfo #channelname{
+
+  color: brown;
+}
+
+#sideinfo #channelnam{
+
+  padding-left: 19%;
+}
+
+#channelnam #channelname{
+
+  font-size: 85%;
+  font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+#channelnam .glyphicon {
+
+  font-size: 89%;
+}
+
+#sideinfo li p{
+
+  font-size: 92%;
+  color: #9999FF;
+}
+
+#trends{
+
+  background-color: black;
+  color: black;
+  width: 1020px !important;
+  height: 260px;
+  margin-left:-170px !important;
+  padding-left: 190px;
+  margin-bottom: 40px;
+}
+
+#footer{
+
+background-color:#336699;
+width: 101%;
+
+}
+
+
+#footer  p{
+  font-size: 99%;
+  color: white;
+  padding: 2%;
+  text-align: center;
+  padding-top: 3%;
+}
+   
+
+#loadbutton{
+
+  display: block;
+  margin: 0 auto;
+  width:15%;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  padding-left: 1.1%;
+  font-size: 80%;
+  height: 20%;
+
+}
+ #subbutton{
+
+  display: block;
+  margin-right: 1%;
+  width:15%;
+  font-size: 70%;
+  height: 15%;
+  margin-top: -.5%
+
+
+}
+#sbutton{
+
+  display: block;
+  margin-right: 1%;
+  width:20%;
+  font-size: 70%;
+  height: 15%;
+  margin-top: -.5%
+
+
+}
+#bold{
+  font-weight: bold;
+}
+#subscribebutton{
+
+  display: block;
+  margin: 0 auto;
+  width:12%;
+  margin-top: 10px;
+  margin-right: 50px;
+
+
+}
+
+#main-head{
+
+   background-color:#336699;
+   width: 101%;
+   margin-top: -3%;
+   margin-left: -15%;
+   padding: 1% 0% 0% 14%;
+   clear: both;
+  }
+span #date{
+
+  padding-top: 8.5%;
+  margin-right: 15%;
+  color: #fff;
+  font-size: .9em;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+#channel-profile{
+
+
+  margin-top: 20px;
+
+}
+
+.content{
+  font-size: 120%;
+}
+
+
+.ccr-gallery-ttile{
+  width:100%;
+  height:40px;
+  margin-top: 20px;
+  line-height:40px;
+  background:#f2f2f4;
+  border-right:5px solid #9999FF;
+  border-left:8px solid #9999FF;
+}
+.ccr-gallery-ttile span{
+  margin: 13px 0;
+  float: left;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent; 
+  border-left:5px solid #9999FF;
+  margin-right:10px;
+}
+.ccr-gallery-ttile p{
+  font-size: 1.28571428em;
+}
+div.ccr-thumbnail{
+  margin-bottom: 5px;
+}
+.ccr-thumbnail{
+  position: relative;
+  overflow: hidden;
+  min-height: 80px;
+}
+.ccr-thumbnail p, 
+.ccr-thumbnail a,
+.nav-paging i,
+input[type="submit"],
+button[type="submit"],
+.footer-social-icons li a,
+#social-buttons a,
+#ccr-contact-sidebar li a
+{
+  -webkit-transition: all .25s ease-in;
+  -moz-transition: all .25s ease-in;
+  -ms-transition: all .25s ease-in;
+  -o-transition: all .25s ease-in;
+  transition: all .25s ease-in;
+}
+.ccr-thumbnail p{
+  text-align: center;
+  background-color: rgba(44, 62, 80,.7);
+  padding-top: 25%;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  height: 100%;   
+  opacity: 0;
+}
+li:hover .ccr-thumbnail p{
+  opacity: 1;
+  top: 0;
+}
+.ccr-thumbnail a{
+  color:#9999FF;
+  border:0px solid #FFF;
+  text-decoration: none;
+}
+.ccr-thumbnail a:hover{
+  color: #FFF;
+  background-color:#336699;
+
+}
+
+
+#ccr-slide-main{
+  position: relative;
+  margin: 15px 0px 50px 0px;
+}
+#ccr-slide-main p{
+  position: absolute;
+  bottom: 0;
+  background-color: rgba(0,0,0, .4);
+  width: 100%;
+  min-height: 60px;
+  line-height: 60px;
+  margin-bottom: 0px;
+}
+#ccr-slide-main p a{
+  color: #9999FF;
+  font-size: 13px;
+  padding-left: 30px;
+  text-decoration: none;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+
+}
+#ccr-slide-main .C-indicators{
+  bottom:-40px;
+}
+#ccr-slide-main .carousel-indicators li{
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 0px;
+}
+#ccr-slide-main .carousel-indicators .active{
+  background-color: #9999FF;
+}
+#ccr-slide-main .carousel-control{
+  text-shadow:none;
+  display: inline-block;
+  background: #9999FF;
+  line-height:36px!important;
+  -moz-line-height:36px!important;
+  height:40px;
+  width:40px;
+  top:45%;
+  opacity: 1;
+}
+#ccr-slide-main .carousel-control:hover{
+  background-color: #5f5f5f;
+}
+#ccr-latest-post-gallery{
+  overflow: hidden;;
+}
+#ccr-latest-post-gallery .ccr-latest-post{
+  margin-top: 5px;
+}
+#ccr-latest-post-gallery li{
+  width: 31.33%;
+  float: left;
+  padding: 10px 0;
+}
+#ccr-latest-post-gallery li:nth-child(3n+3),
+#ccr-latest-post-gallery li:nth-child(3n+2){
+  margin-left:3%;
+}
+#ccr-latest-post-gallery li h4{
+  font-size: 1.2em;
+}
+#ccr-latest-post-gallery li h4 a, #ccr-world-news li h5 a{
+ display: inline-block;
+ width: 100%; 
+ text-decoration: none;  
+}
+#ccr-latest-post-gallery .ccr-thumbnail p{
+  padding-top: 35%;
+}
+
+/*--------ujunwa's additions ------*/
+
+
+/* 13.3 - ccr-commnet
+---------------------------------------------------------------------- */
+#ccr-commnet .ccr-gallery-ttile{
+  margin-bottom: 5px;
+}
+#ccr-commnet .commentlist{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.comment article{
+  border:1px solid #e3e2e2;
+  padding: 10px;
+  margin: 15px 0;
+  /*overflow:hidden;*/
+}
+.reply, .comment-meta{
+  padding-top: 10px;
+  float: right;
+  width: auto;
+}
+.reply a{
+  padding: 0 5px 0 10px;
+  margin-left: 10px;
+  border-left: 1px solid #e3e2e2;
+}
+.comment-authore{
+  width:100px;
+  float:left;
+
+}
+.comment-authore img{
+  width:100%;
+  height:100%;
+  margin-bottom:5px;
+  box-shadow: 0 0 1px rgba(0,0,0,.3);
+}
+.comment-content{
+  margin-top: 5px;
+}
+/* 13.4 - ccr-respond 
+---------------------------------------------------------------------- */
+#ccr-respond .ccr-gallery-ttile{
+  margin-bottom: 20px;
+}
+#author, 
+#email{
+  outline-style: none;
+  border:none;
+  border: 1px solid #e3e2e2;
+  line-height:20px;
+  padding: 10px;
+  margin: 20px 0;
+  width: 48%;
+  height: 40px;
+  float: left;
+}
+#author{
+  margin-right: 4%;
+}
+#url{
+  outline-style: none;
+  border:none;
+  border: 1px solid #e3e2e2;
+  line-height:20px;
+  padding: 10px;
+  margin: 20px 0;
+  width: 100%;
+  height: 40px;
+}
+#comment{
+  outline-style: none;
+  border:none;
+  border: 1px solid #e3e2e2;
+  line-height:20px;
+  padding: 10px;
+  margin: 20px 0;
+  width: 100%;
+  height:50px;
+}
+#commentform input[type="submit"],
+#commentform button[type="submit"]
+{
+  color: #FFF;
+  background-color: #9999ff;
+  height: 40px;
+  line-height:20px;
+  padding: 10px 20px;
+  margin: 20px 0 40px 0;
+  outline-style: none;
+  border:none;
+}
+#commentform input[type="submit"]:hover,
+#commentform button[type="submit"]:hover{
+  background-color: #47cad4;
+}
+
+#respond input[type="submit"]{
+  width: 80px;
+  padding: 10px;
+}
+
+
+
+
+
+/*Admin style sheet*/
+
+#postlist {
+  clear: both;
+  margin-top: 40px;
+  text-decoration: none;
+}
+
+#postlist a{
+  text-decoration: none;
+}
+
+#post-form{
+
+}
+#loadpostbutton{
+
+  display: block;
+  margin: 0 auto;
+  width:25%;
+  margin-top: 70px;
+
+}
+#cancelPost{
+
+  margin-left: 10px;
+}
+
+
+
+#profile{
+
+  margin-bottom: 30px;
+}
+#delbutton{
+
+  width: 8%;
+  height: 6%;
+  font-size: 9px;
+  margin-top: 11px;
+
+}
+
+.side_bar{
+  margin: 5% 2% 5% 2%;
+}
+.nav-tabs {
+  border-bottom: 0; 
+}
+.nav-tabs > li {
+  width:100%;
+}
+
+.nav-tabs > li > a {
+  border: 1px solid transparent;
+  border-radius: 4px 0 0 4px;
+  margin-right: 0; 
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover {
+  background: #FFF;
+  border: 1px solid #DDD;
+  border-right-color: #FFF;
+  margin-right: -1px;
+  position: relative;
+  z-index: 1; 
+}
+
+.tab-content {
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  margin-left: -31px;
+  min-height: 20em;
+  padding: 1em;
+  position: relative;
+  z-index: 0; 
+}
+
+.cBlock{
+  width:20px;
+  height: 20px;
+  background-color: #cccccc;
+  text-align: center;
+  float:left;
+  margin: 2px;
+  cursor:pointer;
+}
+
+/*---- Admin style sheet----*/
+/*-------All Channels Stylesheet-------*/
+#side{
+
+  margin-top:20px;
+}
+
+#side a{
+  font-size: 95%;
+  text-decoration: none;
+}
+
+#side #channelnam{
+
+  padding-left: 48px;
+  font-size: 95%;
+}
+
+#channelnam #channelname{
+
+  font-size: 91%
+
+}
+
+#side li p{
+
+  font-size: 11px;
+  color: #9999FF;
+}
+#channelnam #channel-name-subscribebutton{
+
+  font-size: 8px;  
+  height: 25px;
+  width: 60px;
+  padding: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/*------End of All Channnels Stlesheet--------*/
+
+/*Latest Additions */
+
+#loading_div{
+    margin:0;
+    position:fixed;
+    height: 100%;
+    z-index:9999;
+    padding-top:0px;
+    padding-left:350px;
+    width:100%;
+    clear:none;
+    /*background:url(/img/transbg.png);*/
+    /*background-color:#666666;
+    border:1px solid #000000;*/
+}

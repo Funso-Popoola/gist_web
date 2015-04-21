@@ -1,0 +1,268 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: philip
+ * Date: 3/18/15
+ * Time: 12:34 PM
+ */
+
+    require_once (ROOT_DIR . '/app/libs/Utility.php');
+    use libs\Utility;
+
+    if (!isset($_SESSION)){
+        session_start();
+    }
+
+    $logged_in = false;
+    $link_name = "LOGIN/SUBSCRIBE";
+    $url = Utility::getUrlFor('login');
+
+    if (isset($_SESSION["admin_user_id"]) && isset($_SESSION["user_api_key"])){
+        $user_id = $_SESSION["admin_user_id"];
+        $user_api_key = $_SESSION["user_api_key"];
+        $logged_in = true;
+        $link_name = "LOGOUT";
+        $url = Utility::getUrlFor('login/out');
+    }
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Gist | Dashboard</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link href="<?php echo(Utility::getHrefFor('css/bootstrap.min.css'));?> " rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="<?php echo(Utility::getHrefFor('css/style.css'));?>" rel="stylesheet">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body >
+    <header>
+      <div class="navbar navbar-default navbar-inverse navbar-fixed-top" >
+        <div class="container">
+          <div class="navbar-header">
+            <button class="navbar-toggle" data-toggle ="collapse" data-target="#navbar">
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+
+            </button>
+            <a href="index.php"><img src="<?php echo(Utility::getHrefFor('img/logoo.jpg'));?>"  style="margin:0 auto"  width="60px" class="img pull-left "><a href="#" class="navbar-brand"><strong> &nbsp Gist Admin</strong></a></a>
+          </div>
+
+        </div>
+      </div>
+
+    </header>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="side_bar">
+          <div class="col-md-3">
+            <!-- the navigation bar goes in here-->
+            <ul class="nav nav-tabs">
+              <li><a href="#general" data-toggle="tab"></a></li>
+              <li class="active"><a href="#Posts" data-toggle="tab"><h5>POSTS</h5></a></li>
+              <li><a href="#Profile" data-toggle="tab"><h5>PROFILE</h5></a></li>
+            </ul> 
+          </div>
+
+          <!-- col ; end of navigation bar-->
+        </div>
+
+        <div class="col-md-8">
+          <!-- the  content of all tabs-->
+          <div class="tab-content">
+
+
+            <!-- tab contents proper-->
+            <div class="tab-pane active" id="Posts">
+
+               <div id="post-form" class="hidden">
+
+                 <h3 id="channelname">New Post</h3>
+                 <hr>
+                 <!-- start the form for home settings -->
+                 <form role="form" style="margin-top:30px;">
+                   <div class="form-group">
+                      <label id="channelname">Title:</label><br>
+                      <input type="text" class="form-control" placeholder="Enter News title">
+                    </div>
+                   
+                    <div class="form-group">
+                      <label id="channelname">Image:</label><br>
+                      <img src="../static/img/img.jpeg" width="150px" height="150px">
+                      <input type="file">
+                    </div>
+                    
+                    <div class="form-group">
+                      <label id="channelname">News Detail:</label><br>
+                      <textarea class="form-control" rows="15"></textarea>
+                    </div>
+
+                
+                    <div class="row">
+                      <div class="col-md-6"><button type="submit" class="btn btn-info">Publish</button><button type="submit" class="btn btn-info" id="cancelPost">Cancel</button></div>
+
+                    </div>      
+                </form>
+              </div>
+
+
+                 <h3 id="channelname">Posts</h3>
+                 <hr>
+
+              <div><button id="addPost" class="btn btn-info pull-right">Add Post &nbsp;<span class="glyphicon glyphicon-plus-sign"></span></button></div>
+
+              <div id="postlist">
+               <ul>
+                 <li>
+                   <a href="">
+                     <div>
+                       <p id="channelname"> Title: OAU student wins a car</p>
+                       <p>The administrator can choose to change his current password to any that any other password of his choice that he remembers.
+                        If the administrator forgets his Password, he has to visit the Webometrics Unit to reset it and collect a new one.
+                        <button class="btn btn-danger pull-right" id="delbutton">Delete&nbsp;<span class="glyphicon glyphicon-trash"></span></button></p>
+
+                      </div>  
+                    </a>
+                  </li>
+
+                  <hr>
+
+                  <li>
+                   <a href="">
+                     <div>
+                       <p id="channelname"> Title: Best graduating student 2016/2017 session</p>
+                       <p>Bootstrap includes 200 glyphs from the Glyphicon Halflings set. 
+                         Glyphicons Halflings are normally not available for free, but their creator has made them available for Bootstrap free of cost. 
+                         <button class="btn btn-danger pull-right" id="delbutton">Delete&nbsp;<span class="glyphicon glyphicon-trash"></span></button></p>
+
+                       </div>  
+                     </a>
+                   </li>
+
+                   <hr>
+
+                   <li>
+                     <a href="">
+                       <div>
+                         <p id="channelname"> Title: Fashion glamour</p>
+                         <p>The administrator can choose to change his current password to any that any other password of his choice that he remembers.
+                          If the administrator forgets his Password, he has to visit the Webometrics Unit to reset it and collect a new one.
+                          <button class="btn btn-danger pull-right" id="delbutton">Delete&nbsp;<span class="glyphicon glyphicon-trash"></span></button></p>
+
+                        </div>  
+                      </a>
+                    </li>
+
+                    <hr>
+
+                    <li>
+                     <a href="">
+                       <div>
+                         <p id="channelname"> Title: Entertainment Arena</p>
+                         <p>Bootstrap includes 200 glyphs from the Glyphicon Halflings set. 
+                           Glyphicons Halflings are normally not available for free, but their creator has made them available for Bootstrap free of cost. 
+                           <button class="btn btn-danger pull-right" id="delbutton">Delete&nbsp;<span class="glyphicon glyphicon-trash"></span></button></p>
+
+                         </div>  
+                       </a>
+                     </li>
+
+                     <hr>
+
+                     <li>
+                       <a href="">
+                         <div>
+                           <p id="channelname"> Title: Wizkid Storms OAU</p>
+                           <p>The administrator can choose to change his current password to any that any other password of his choice that he remembers.
+                            If the administrator forgets his Password, he has to visit the Webometrics Unit to reset it and collect a new one.
+                            <button class="btn btn-danger pull-right" id="delbutton">Delete&nbsp;<span class="glyphicon glyphicon-trash"></span></button></p>
+
+                          </div>  
+                        </a>
+                      </li>
+                    </ul>
+              </div>
+
+              <div  id="loadpostbutton">
+               <button class="btn btn-success">Load More Posts</button>
+             </div>
+           </div>
+
+           <!-- end of posts tab -->
+
+           <!-- tab contents proper-->
+            <div class="tab-pane" id="Profile">
+
+              <h3 id="channelname">Profile</h3>
+
+              <hr>
+              <!-- start the form for home settings -->
+             
+                <div class="form-group">
+                      <label id="channelname">CHANNEL NAME:</label><br>
+                      <input type="text" class="form-control" placeholder="Enter desired name here">
+                    </div>
+               
+               <div>
+                   <p id="channelname">IMAGE:</p>
+                <img src="../static/img/img.jpeg" width="150px" height="150px">
+                 <input type="file">
+               </div><br>
+
+              
+
+               <div class="form-group">
+                      <label id="channelname">DESCRIPTION:</label><br>
+                      <textarea class="form-control" rows="8"></textarea>
+                    </div>
+          
+
+              <div class="row">
+                <div class="col-md-6"><button type="submit" class="btn btn-info">Save</button></div>
+              </div>
+
+            </div>
+
+     </div>
+     <!-- End of tab contents-->
+
+
+   </div>
+
+ </div>
+</div>
+</div>
+
+<!-- jQuery -->
+<script src="<?php echo(Utility::getHrefFor('js/jquery.js'));?>"></script>
+<script src="<?php echo(Utility::getHrefFor('js/admin.js'));?>"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="<?php echo(Utility::getHrefFor('js/bootstrap.min.js'));?>"></script>
+
+<!-- Menu Toggle Script -->
+<script>
+  $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+  });
+</script>
+
+</body>
+
+</html>
