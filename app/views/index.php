@@ -185,12 +185,6 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])){
                                 </div>
                             </div>
 
-                            <div class="container">
-                                <div class="col-md-9">
-                                    <a href="" class="btn btn-success" id="loadbutton">LOAD MORE</a>
-                                </div>
-                            </div>
-
 
 
                         </div>

@@ -880,16 +880,29 @@ li:hover .ccr-thumbnail p{
 
 /*Latest Additions */
 
-#loading_div{
-    margin:0;
-    position:fixed;
-    height: 100%;
-    z-index:9999;
-    padding-top:0px;
-    padding-left:350px;
-    width:100%;
-    clear:none;
+/*#loading_div{*/
+    /*margin:0;*/
+    /*position:fixed;*/
+    /*height: 100%;*/
+    /*z-index:9999;*/
+    /*padding-top:0px;*/
+    /*padding-left:350px;*/
+    /*width:100%;*/
+    /*clear:none;*/
     /*background:url(/img/transbg.png);*/
     /*background-color:#666666;
     border:1px solid #000000;*/
+/*}*/
+.loading {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 )
+                url('../img/load.gif')
+                50% 50%
+                no-repeat;
 }

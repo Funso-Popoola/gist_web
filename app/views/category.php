@@ -91,9 +91,9 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])){
 
                           <div class="container">
                             <div class="col-md-9" id="main-head">
-                                <div id="loading_div" style="display: none;">
-                                    <img src="<?php echo(Utility::getHrefFor('img/load.gif'));?>">
-                                </div>
+<!--                                <div id="loading_div" style="display: none;">-->
+<!--                                    <img src="--><?php //echo(Utility::getHrefFor('img/load.gif'));?><!--">-->
+<!--                                </div>-->
                                 <div class="hidden">
                                     <p id="cred"><?php echo($user_api_key . '_' . $user_id);?></p>
                                 </div>

@@ -17,8 +17,12 @@ class AdminController extends Controller {
         parent::__construct('admin_login');
     }
 
-    public function index(){
+    public function view(){
         $this->view->render('admin_login');
+    }
+
+    public function index(){
+        $this->login();
     }
 
     public function login(){

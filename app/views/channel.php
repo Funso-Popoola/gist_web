@@ -98,9 +98,9 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])){
 
                     <div class="container">
                        <div class="col-md-9">
-                           <div id="loading_div" style="display: none;">
-                               <img src="<?php echo(Utility::getHrefFor('img/load.gif'));?>">
-                           </div>
+<!--                           <div id="loading_div" style="display: none;">-->
+<!--                               <img src="--><?php //echo(Utility::getHrefFor('img/load.gif'));?><!--">-->
+<!--                           </div>-->
                            <div class="hidden">
                                <p id="cred"><?php echo($user_api_key . '_' . $user_id);?></p>
                            </div>
@@ -116,7 +116,7 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])){
                                 </div>
                                 <div class="col-md-9">
                                      <span id="channel_desc">Join this channel to get the latest and hottest gist about everything and anything. Yes, every bit of information at your fingertips. Click on the subscribe button to get first-hand access to news post from this channel.</span>
-                                     <p><button class="btn btn-success pull-right" id="subbutton">SUBSCRIBE</button></p>
+                                     <p><a><button id="channel_btn" class="btn btn-success pull-right" id="subbutton">SUBSCRIBE</button></a></p>
                                 </div>
                         </div>
                         <hr>

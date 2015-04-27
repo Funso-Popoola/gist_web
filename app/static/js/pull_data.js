@@ -8,11 +8,15 @@ var user_api_key = null;
 var focused_news_id = null;
 
 var asyncCaller = [];
+var current_channel = 0;
 
 var index_channels = {
+    id: [],
     counts: {},
     lastIDs: {}
 };
+
+var trending = [];
 
 var current_page;
 var PAGE = {
@@ -52,8 +56,10 @@ var URL = {
     local_login_file: "http://localhost/web/login/verify",
     news: BASE_URL + "/news/news_by_id/_ID?key=" + KEY.standard,
     news_by_category: BASE_URL + "/news/category/_ID?key=" + KEY.standard,
+    news_by_category_with_marker: BASE_URL + "/news/category/_ID?marker=_LAST&type=_TYPE&key=" + KEY.standard,
     categories: BASE_URL + "/categories?key=" + KEY.standard,
     news_by_channel: BASE_URL + "/news/channels/_ID?key=" + KEY.standard,
+    news_by_channel_with_marker: BASE_URL + "/news/channels/_ID?marker=_LAST&type=_TYPE&key=" + KEY.standard,
     news_feed: BASE_URL + "/news_feed?key=_API_KEY",
     news_feed_with_marker: BASE_URL + "/news_feed?marker=_LAST_ID&type=_TYPE&key=_API_KEY",
     all_news: BASE_URL + "/news?key=" + KEY.standard,
@@ -95,7 +101,7 @@ function login(){
 function extractResponseObject(caller){
     var response = null;
     if (caller.xhr.readyState == ResponseState.RESPONSE_COMPLETE && caller.xhr.responseText != null){
-        console.log(caller.xhr.responseText);
+        //console.log(caller.xhr.responseText);
         var textResponse = caller.xhr.responseText;
         response = JSON.parse(textResponse);
     }
@@ -120,14 +126,14 @@ EventCallBack.prototype.loadMore = function(){
 
 EventCallBack.prototype.onLoadStart = function(){
     console.log("LOAD STARTS");
-    var loading_div = document.getElementById('loading_div');
-    loading_div.style.display = "block";
+    var body = document.getElementsByTagName('body')[0];
+    body.setAttribute('class', 'loading');
 };
 
 EventCallBack.prototype.onLoadEnd = function(){
     console.log("LOAD END");
-    var loading_div = document.getElementById('loading_div');
-    loading_div.style.display = "none";
+    var body = document.getElementsByTagName('body')[0];
+    body.setAttribute('class', body.getAttribute('class').replace('loading', ''));
 };
 
 EventCallBack.prototype.parseNews = function (){
@@ -221,14 +227,16 @@ EventCallBack.prototype.parseChannelDetails = function(){
         console.log("No data");
 };
 
-EventCallBack.prototype.parseChannelNews = function(){
-    var caller = asyncCaller[CALLER_INDEX.channel_news];
+EventCallBack.prototype.parseChannelNews = function(channel_id){
+    var callerArr = asyncCaller[CALLER_INDEX.channel_news];
+    var caller = callerArr[channel_id];
     var responseObject = extractResponseObject(caller);
     //console.log(responseObject);
     if (responseObject){
         caller.responseObj = responseObject;
         asyncCaller[CALLER_INDEX.channel_news].responseObj = responseObject;
-        filler.fillChannelNews();
+        if (responseObject["data"].length > 0)
+            filler.fillChannelNews(responseObject["data"][0]["channel_id"]);
     }
     else
         console.log("No data");
@@ -303,27 +311,38 @@ EventCallBack.prototype.parseUserNewsFeedWithMarker = function(){
 var Getter = function(){};
 
 Getter.prototype.getNews = function(news_id){
+    if (!asyncCaller[CALLER_INDEX.news])
+        asyncCaller[CALLER_INDEX.news ] = new AsyncCaller();
     asyncCaller[CALLER_INDEX.news]
         .prepareRequest(Method.GET, (URL.news).replace('_ID', news_id), eventCallBack.parseNews);
-    asyncCaller[CALLER_INDEX.news].makeRequest(null);
+    asyncCaller[CALLER_INDEX.news].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getCategories = function(){
+    if (!asyncCaller[CALLER_INDEX.categories])
+        asyncCaller[CALLER_INDEX.categories ] = new AsyncCaller();
+
     asyncCaller[CALLER_INDEX.categories]
         .prepareRequest(Method.GET, URL.categories, eventCallBack.parseCategories);
     asyncCaller[CALLER_INDEX.categories].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getComment = function(news_id){
+    if (!asyncCaller[CALLER_INDEX.comment])
+        asyncCaller[CALLER_INDEX.comment ] = new AsyncCaller();
     asyncCaller[CALLER_INDEX.comment]
         .prepareRequest(Method.GET, (URL.comments).replace('_ID', news_id), eventCallBack.parseComments);
-    asyncCaller[CALLER_INDEX.comment].makeRequest(null);
+    asyncCaller[CALLER_INDEX.comment].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getAllChannels = function(){
+
+    if (!asyncCaller[CALLER_INDEX.all_channels])
+        asyncCaller[CALLER_INDEX.all_channels ] = new AsyncCaller();
+
     var url = URL.all_channels;
 
-    if (user_api_key){
+    if (user_api_key && user_api_key != 0){
         url = (URL.all_channels)
             .replace(KEY.standard, user_api_key)
             .replace('channels', 'subscriptions');
@@ -331,66 +350,112 @@ Getter.prototype.getAllChannels = function(){
 
     asyncCaller[CALLER_INDEX.all_channels]
         .prepareRequest(Method.GET, url, eventCallBack.parseAllChannels);
-    asyncCaller[CALLER_INDEX.all_channels].makeRequest(null);
+    asyncCaller[CALLER_INDEX.all_channels].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
-Getter.prototype.getNewsByCategory = function(categoryId){
+Getter.prototype.getNewsByCategory = function(categoryId, lastId){
+    if (!asyncCaller[CALLER_INDEX.category_news])
+        asyncCaller[CALLER_INDEX.category_news] = new AsyncCaller();
+
+    var url = (URL.news_by_category).replace('_ID', categoryId);
+    if (lastId){
+        url = (URL.news_by_category_with_marker)
+            .replace('_ID', categoryId)
+            .replace('_LAST', lastId)
+            .replace('_TYPE', 'older');
+    }
     asyncCaller[CALLER_INDEX.category_news]
-        .prepareRequest(Method.GET, (URL.news_by_category).replace('_ID', categoryId), eventCallBack.parseCategoryNews);
-    asyncCaller[CALLER_INDEX.category_news].makeRequest(null);
+        .prepareRequest(Method.GET, url, eventCallBack.parseCategoryNews);
+    asyncCaller[CALLER_INDEX.category_news].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getChannelDetails = function(channel_id){
+    if (!asyncCaller[CALLER_INDEX.channel])
+        asyncCaller[CALLER_INDEX.channel ] = new AsyncCaller();
+
     asyncCaller[CALLER_INDEX.channel]
         .prepareRequest(Method.GET, (URL.channel_details).replace('_ID', channel_id), eventCallBack.parseChannelDetails);
-    asyncCaller[CALLER_INDEX.channel].makeRequest(null);
+    asyncCaller[CALLER_INDEX.channel].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
-Getter.prototype.getChannelNews = function(channel_id){
-    asyncCaller[CALLER_INDEX.channel_news]
-        .prepareRequest(Method.GET, (URL.news_by_channel).replace('_ID', channel_id), eventCallBack.parseChannelNews);
-    asyncCaller[CALLER_INDEX.channel_news].makeRequest(null);
+Getter.prototype.getChannelNews = function(channel_id, lastId){
+    if (!asyncCaller[CALLER_INDEX.channel_news])
+        asyncCaller[CALLER_INDEX.channel_news] = [];
+    if (!asyncCaller[CALLER_INDEX.channel_news][channel_id])
+        asyncCaller[CALLER_INDEX.channel_news][channel_id] = new AsyncCaller();
+
+    var url = (URL.news_by_channel).replace('_ID', channel_id);
+
+    if (lastId){
+        url = (URL.news_by_channel_with_marker)
+            .replace('_ID', channel_id)
+            .replace('_LAST', lastId)
+            .replace('_TYPE', 'older');
+    }
+    asyncCaller[CALLER_INDEX.channel_news][channel_id]
+        .prepareRequest(Method.GET, url, function(){eventCallBack.parseChannelNews(channel_id);});
+    asyncCaller[CALLER_INDEX.channel_news][channel_id].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getAllNews = function(){
+    if (!asyncCaller[CALLER_INDEX.all_news])
+        asyncCaller[CALLER_INDEX.all_news ] = new AsyncCaller();
+
+    var url = URL.all_news;
+    if (user_api_key && user_api_key != 0){
+        url = (URL.news_feed).replace('_API_KEY', user_api_key);
+    }
     asyncCaller[CALLER_INDEX.all_news]
-        .prepareRequest(Method.GET, URL.all_news, eventCallBack.parseAllNews);
-    asyncCaller[CALLER_INDEX.all_news].makeRequest(null);
+        .prepareRequest(Method.GET, url, eventCallBack.parseAllNews);
+    asyncCaller[CALLER_INDEX.all_news].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getAllNewsWithMarker = function(last_news_id, type){
+    if (!asyncCaller[CALLER_INDEX.all_news_with_marker])
+        asyncCaller[CALLER_INDEX.all_news_with_marker ] = new AsyncCaller();
+
     var url = (URL.all_news_with_marker)
         .replace('_LAST_ID', last_news_id)
         .replace('_TYPE', type);
     asyncCaller[CALLER_INDEX.all_news_with_marker]
         .prepareRequest(Method.GET, url, eventCallBack.parseAllNewsWithMarker);
-    asyncCaller[CALLER_INDEX.all_news_with_marker].makeRequest(null);
+    asyncCaller[CALLER_INDEX.all_news_with_marker].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getUserNewsFeed = function(){
+    if (!asyncCaller[CALLER_INDEX.user_news_feed])
+        asyncCaller[CALLER_INDEX.user_news_feed ] = new AsyncCaller();
+
     asyncCaller[CALLER_INDEX.user_news_feed]
         .prepareRequest(Method.GET, (URL.news_feed).replace('_API_KEY', user_api_key), eventCallBack.parseUserNewsFeed);
-    asyncCaller[CALLER_INDEX.user_news_feed].makeRequest(null);
+    asyncCaller[CALLER_INDEX.user_news_feed].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getUserNewsFeedWithMarker = function(last_news_id, type){
+
+    if (!asyncCaller[CALLER_INDEX.user_news_feed_with_marker])
+        asyncCaller[CALLER_INDEX.user_news_feed_with_marker ] = new AsyncCaller();
+
     var url = (URL.news_feed_with_marker)
         .replace('_API_KEY', user_api_key)
         .replace('_LAST_ID', last_news_id)
         .replace('_TYPE', type);
     asyncCaller[CALLER_INDEX.user_news_feed_with_marker]
         .prepareRequest(Method.GET, url, eventCallBack.parseUserNewsFeedWithMarker);
-    asyncCaller[CALLER_INDEX.user_news_feed_with_marker].makeRequest(null);
+    asyncCaller[CALLER_INDEX.user_news_feed_with_marker].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Getter.prototype.getMySubscriptions = function(){
+    if (!asyncCaller[CALLER_INDEX.subscriptions])
+        asyncCaller[CALLER_INDEX.subscriptions ] = new AsyncCaller();
+
     var url = URL.all_channels;
     if (user_api_key != null && user_api_key != 0){
-        url = (URL.my_subscriptions).replace('_API_KEY', user_api_key);
+        url = (URL.my_subscriptions).replace(KEY.standard, user_api_key);
     }
     asyncCaller[CALLER_INDEX.subscriptions]
         .prepareRequest(Method.GET, url, eventCallBack.parseSubscriptions);
-    asyncCaller[CALLER_INDEX.subscriptions].makeRequest(null);
+    asyncCaller[CALLER_INDEX.subscriptions].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 var Filler = function(){};
@@ -432,7 +497,7 @@ Filler.prototype.fillComments = function (){
                             '</span>' +
                             '<span class="post-meta">' +
                                 '<span class="bullet time-ago-bullet" aria-hidden="true">•</span>' +
-                                '<a href="#">2 months ago</a>' +
+                                '<a href="#">' + utility.getRelativeTime(obj[i]["created_at"] + '') + '</a>' +
                             '</span>' +
                             '</header>' +
                       '</div>' +
@@ -474,13 +539,27 @@ Filler.prototype.fillAllChannels = function(){
         div.setAttribute('class', "row");
         div.setAttribute('id', "side-newss");
 
+        var btn_class = 'primary';
+        var btn_label = 'LOGIN';
+
+        if (user_api_key && user_api_key != 0){
+            if (obj[i]["isSubscribed"] == 'true'){
+                btn_class = 'danger';
+                btn_label = 'UNSUBSCRIBE';
+            }
+            else{
+                btn_class = 'success';
+                btn_label = 'SUBSCRIBE';
+            }
+        }
+
         var content = '<div class="col-md-2">' +
                       '<img src="' + obj[i]["channel_img_url"] + '" height="120%" width="120%">'+
                       '</div>' +
                       '<div class="col-md-9">' +
                         '<p><b>' + obj[i]["channel_name"] + '</b></p>'+
                         '<span>' + obj[i]["description"] + '</span>' +
-                         '<p><button class="btn btn-primary pull-right" id="sbutton">'+ (user_api_key ? ((obj[i]["isSubscribed"] == 'true') ? 'UNSUBSCRIBE' : 'SUBSCRIBE') : 'LOGIN') + ' | <span id="bold">' + obj[i]["post_count"] + '</span></button></p>' +
+                         '<p><button class="btn btn-' + btn_class + ' pull-right" id="sbutton">'+ btn_label + ' | <span id="bold">' + obj[i]["post_count"] + '</span></button></p>' +
                       '</div>';
         div.innerHTML = content;
         channels_container.appendChild(div);
@@ -495,6 +574,9 @@ Filler.prototype.fillAllChannels = function(){
 Filler.prototype.fillCategoryNews = function(){
 
     var obj = asyncCaller[CALLER_INDEX.category_news].responseObj["data"];
+
+    if (!obj.length > 0)
+        return;
 
     var category_heading = document.getElementById('channelheading');
     category_heading.innerText = obj[0]["category_name"].toUpperCase();
@@ -527,14 +609,22 @@ Filler.prototype.fillCategoryNews = function(){
         parent.appendChild(news_row);
     }
 
-    var container = document.createElement('div');
-    container.setAttribute('class', 'container');
-    var btn_div = document.createElement('div');
-    btn_div.setAttribute('class', 'col-md-9');
-    btn_div.innerHTML = '<a href="" class="btn btn-success" id="loadbutton">LOAD MORE</a>';
-    container.appendChild(btn_div);
-    parent.appendChild(container);
+    var btn_div = document.getElementById('btn_div');
+    if (!btn_div){
+        var container = document.createElement('div');
+        container.setAttribute('class', 'container');
+        btn_div = document.createElement('div');
+        btn_div.setAttribute('class', 'col-md-9');
+        btn_div.setAttribute('id', 'btn_div');
+        btn_div.innerHTML = '<button class="btn btn-success" id="loadbutton">LOAD MORE</button>';
 
+        container.appendChild(btn_div);
+        parent.appendChild(container);
+
+    }
+    btn_div.onclick = function(){
+        getter.getNewsByCategory(obj[i - 1]["category_id"], obj[i - 1]["news_id"]);
+    };
 };
 
 Filler.prototype.fillChannelDetails = function(){
@@ -542,23 +632,48 @@ Filler.prototype.fillChannelDetails = function(){
     var channel_name = document.getElementById('channelheading');
     var channel_image = document.getElementById('channel_image');
     var channel_desc = document.getElementById('channel_desc');
+    var channel_btn = document.getElementById('channel_btn');
 
     channel_name.innerText = obj["channel_name"];
     channel_image.src = obj["channel_img_url"];
     channel_desc.innerText = obj["description"];
 
+    var btn_label = 'LOGIN';
+    var btn_link = utility.getUrlFor('login');
+    if (user_api_key && user_api_key != 0){
+        btn_label = 'SUBSCRIBE';
+        channel_btn.parentElement.onclick = function(){
+            console.log('Subscribe');
+        };
+    }
+    else{
+        channel_btn.parentElement.setAttribute('href', btn_link);
+    }
+
+    channel_btn.innerText = btn_label;
+
 
 };
 
-Filler.prototype.fillChannelNews = function(){
+Filler.prototype.fillChannelNews = function(channel_id){
 
-    var obj = asyncCaller[CALLER_INDEX.channel_news].responseObj["data"];
+    var obj = asyncCaller[CALLER_INDEX.channel_news][channel_id].responseObj["data"];
 
     var parent = document.getElementById('ccr-latest-post-gallery');
+    if (current_page == PAGE.index){
+        if (obj.length > 0){
+            parent = document.getElementById('channel_' + obj[0]['channel_name']);
+            if (parent)
+                parent.setAttribute('class', 'block');
+        }
+    }
+
     var news_row;
     for (var i = 0; i < obj.length; i++){
 
-
+        if (index_channels.counts[obj[i]["channel_name"]] >= 8){
+            continue;
+        }
 
         if ( i % 4 == 0 || i == 0){
             news_row = document.createElement('div');
@@ -576,18 +691,21 @@ Filler.prototype.fillChannelNews = function(){
             '</div>' +
             '<a href="' + utility.getUrlFor("news/view/" + obj[i]["news_id"]) + '" id="link-font">' + utility.shortenText(obj[i]["title"], 50) + '</a>';
 
+        index_channels.counts[obj[i]["channel_name"]]++;
+
         news_item.innerHTML = news;
         news_row.appendChild(news_item);
         parent.appendChild(news_row);
     }
-
-    var container = document.createElement('div');
-    container.setAttribute('class', 'container');
     var btn_div = document.createElement('div');
-    btn_div.setAttribute('class', 'col-md-9');
-    btn_div.innerHTML = '<a href="" class="btn btn-success" id="loadbutton">LOAD MORE</a>';
-    container.appendChild(btn_div);
-    parent.appendChild(container);
+    btn_div.setAttribute('class', 'col-md-12');
+    if (!current_page == PAGE.index){
+        btn_div.innerHTML = '<a href="" class="btn btn-success" id="loadbutton">LOAD MORE</a>';
+    }
+    else{
+        btn_div.innerHTML = '<a id="loadbutton" href="' + utility.getUrlFor("channels/view/" + obj[i - 1]["channel_id"]) + '" class="btn btn-success">VIEW ALL</a>';
+    }
+    parent.appendChild(btn_div);
 };
 
 Filler.prototype.fillAllNews = function(){
@@ -621,7 +739,7 @@ Filler.prototype.fillAllNews = function(){
 
     for (i = limit; i < limit + 5; i++ ){
 
-        index_channels.counts[obj[i]["channel_name"]]++;
+        //index_channels.counts[obj[i]["channel_name"]]++;
         var news_div = document.createElement('div');
         news_div.setAttribute('class', 'row');
         news_div.setAttribute('id', 'side-news');
@@ -657,25 +775,23 @@ Filler.prototype.fillAllNewsWithMarker = function(){
             var channel_container = document.createElement('div');
             channel_container.setAttribute('class', 'container');
             channel_container.innerHTML = '<div class="col-md-9">' +
-                                            '<section id="channel_' + obj[i]["channel_id"] + '">' +
+                                            '<section id="channel_' + obj[i]["channel_name"] + '">' +
                                             '<div class="ccr-gallery-ttile">' +
-                                            '<span></span>' +
                                             '<p id="channelheading">' + obj[i]["channel_name"] + '</p>' +
                                             '</div>' +
-                                            '</section>' +
                                             '</div>';
+            if (!index_channels.counts[obj[i]["channel_name"]]){
+                index_channels.counts[obj[i]["channel_name"]] = 0;
+            }
             main.appendChild(channel_container);
             channelArray.push(obj[i]["channel_id"]);
         }
 
+        //console.log(index_channels.counts);
+        parent = document.getElementById('channel_' + obj[i]["channel_name"]);
 
-        console.log(index_channels.counts);
-        parent = document.getElementById('channel_' + obj[i]["channel_id"]);
 
-        if (!index_channels.counts[obj[i]["channel_name"]]){
-            index_channels.counts[obj[i]["channel_name"]] = 0;
-        }
-        if (index_channels.counts[obj[i]["channel_name"]] >= 5){
+        if (index_channels.counts[obj[i]["channel_name"]] >= 8){
             continue;
         }
 
@@ -685,7 +801,6 @@ Filler.prototype.fillAllNewsWithMarker = function(){
             news_row.setAttribute('id', 'newsrow');
         }
 
-        index_channels.counts[obj[i]["channel_name"]]++;
         var news_item = document.createElement('div');
         news_item.setAttribute('class', 'ccr-thumbnail col-md-3');
         var news = '<img src="' + obj[i]["image_url"] + '" alt="' + obj[i]["channel_name"] + obj[i]["news_id"] + '" height="100px" width="100px">' +
@@ -702,6 +817,14 @@ Filler.prototype.fillAllNewsWithMarker = function(){
         parent.appendChild(news_row);
 
         index_channels.counts[obj[i]["channel_name"]]++;
+        if (index_channels.counts[obj[i]["channel_name"]] == 8){
+            var btn_div = document.createElement('div');
+            btn_div.setAttribute('class', 'col-md-12');
+            btn_div.innerHTML = '<a id="loadbutton" href="' + utility.getUrlFor("channels/view/" + obj[i]["channel_id"]) + '" class="btn btn-success">VIEW ALL</a>';
+            parent.appendChild(btn_div);
+
+        }
+
     }
 
     getter.getMySubscriptions();
@@ -726,21 +849,29 @@ Filler.prototype.fillUserNewsFeedWithMarker = function(){
 
 Filler.prototype.fillSubscriptions = function(){
 
-    var obj = asyncCaller[CALLER_INDEX.all_news].responseObj["data"];
+    var obj = asyncCaller[CALLER_INDEX.subscriptions].responseObj["data"];
+
+    console.log(obj);
 
     var main = document.getElementById('main_content');
 
     for (var i = 0; i < obj.length; i++){
 
+        if (user_api_key && user_api_key != 0){
+            if (obj[i]["isSubscribed"] != "true")
+                continue;
+        }
+
+
         if (!index_channels.counts[obj[i]["channel_name"]]) {
             index_channels.counts[obj[i]["channel_name"]] = 0;
         }
 
-        if (!document.getElementById('channel_' + obj[i]["channel_id"])){
+        if (!document.getElementById('channel_' + obj[i]["channel_name"])){
             var channel_container = document.createElement('div');
             channel_container.setAttribute('class', 'container');
             channel_container.innerHTML = '<div class="col-md-9">' +
-            '<section id="channel_' + obj[i]["channel_id"] + '">' +
+            '<section id="channel_' + obj[i]["channel_name"] + '" class="hidden">' +
             '<div class="ccr-gallery-ttile">' +
             '<span></span>' +
             '<p id="channelheading">' + obj[i]["channel_name"] + '</p>' +
@@ -748,9 +879,21 @@ Filler.prototype.fillSubscriptions = function(){
             '</section>' +
             '</div>';
             main.appendChild(channel_container);
+
+
+            getter.getChannelNews(obj[i]["channel_id"]);
         }
 
     }
+
+    var index_channels_keys = Object.keys(index_channels.counts);
+    var len = index_channels_keys.length;
+    var mid_channel = index_channels_keys[len / 2];
+
+    var before_trending = document.getElementById('channel_' + mid_channel).parentElement.parentElement;
+    var trending = document.getElementById('trends');
+    main.insertBefore(trending, before_trending);
+
 
     //getter.getUserNewsFeed(user_api_key);
 };
@@ -759,6 +902,9 @@ function sendLoginCredentials(){
 
     var username_email = document.getElementById('username_email').value;
     var password = document.getElementById('user_password').value;
+
+    if (!asyncCaller[CALLER_INDEX.login])
+        asyncCaller[CALLER_INDEX.login] = new AsyncCaller();
 
     asyncCaller[CALLER_INDEX.login]
         .prepareRequest(Method.POST, URL.login, eventCallBack.parseLoginResponse);
@@ -772,14 +918,6 @@ function sendLoginCredentials(){
 }
 
 function setUp(page){
-    if (asyncCaller.length == 0){
-        console.log(CALLER_INDEX);
-        for (var i = 0; i < 15; i++){
-            var caller = new AsyncCaller();
-            asyncCaller.push(caller);
-        }
-        console.log(asyncCaller);
-    }
     if (!eventCallBack)
         eventCallBack = new EventCallBack();
     if (!getter)
@@ -817,7 +955,7 @@ function fireCalls(page){
             }
             else{
                 // user is logged_in
-                getter.getMySubscriptions();
+                getter.getAllNews();
             }
             break;
         case PAGE.login:

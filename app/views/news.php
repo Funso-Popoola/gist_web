@@ -128,9 +128,9 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])){
                                             </div>
 
                                             <div class="row" id="news-button">
-                                                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-up" id="num_of_likes">56</span></button>&nbsp;
-                                                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-comment" id="num_of_comments">100</span></button>&nbsp;
-                                                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-down" id="num_of_dislikes">20</span></button>&nbsp;
+                                                <a href="#"><span class="glyphicon glyphicon-thumbs-up" id="num_of_likes">56</span></a>&nbsp;
+                                                <a href="#"><span class="glyphicon glyphicon-comment" id="num_of_comments">100</span></a>&nbsp;
+                                                <a href="#"><span class="glyphicon glyphicon-thumbs-down" id="num_of_dislikes">20</span></a>&nbsp;
                                             </div>
                                         </article>
 
