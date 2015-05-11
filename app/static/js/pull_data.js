@@ -1145,9 +1145,8 @@ Filler.prototype.fillAllNews = function(){
     var main = document.getElementById('main_content');
     var channelArray = [];
 
-    for (var i = 0; i < limit; i++){
+    for (var i = 0; i < limit + MAX_SIDE_NEWS_ITEMS; i++){
         // fill slider
-
         if (channelArray.indexOf(obj[i]["channel_id"]) < 0){
             var channel_container = document.createElement('div');
             channel_container.setAttribute('class', 'row');
@@ -1169,62 +1168,40 @@ Filler.prototype.fillAllNews = function(){
 
         index_channels.lastIDs[obj[i]["channel_name"]] = obj[i]["news_id"];
 
-        var content_div = document.createElement('div');
-        content_div.setAttribute('class', ((i == 0) ? 'active ' : '') + 'item' );
-        content_div.innerHTML = '<div class="container slide-element">' +
-        '<img src="' + obj[i]["image_url"] + '"  width="530px" height="370px">' +
-        '<p><a href="' + utility.getUrlFor("news/view/" + obj[i]["news_id"] ) + '">' + obj[i]["title"] + '</a></p>' +
-        '</div>';
-
-        // fill slider indicators
-        var list_item = document.createElement('li');
-        list_item.setAttribute('data-target', '#ccr-slide-main');
-        list_item.setAttribute('data-slide-to', i + '');
-        if (i == 0) list_item.setAttribute('class', 'active');
-
-        slider_div.appendChild(content_div);
-        slider_indicators.appendChild(list_item);
-    }
-
-    for (i = limit; i < limit + MAX_SIDE_NEWS_ITEMS; i++ ){
-
-        if (channelArray.indexOf(obj[i]["channel_id"]) < 0){
-            channel_container = document.createElement('div');
-            channel_container.setAttribute('class', 'row');
-            channel_container.innerHTML = '<div class="col-md-12">' +
-            '<section id="channel_' + obj[i]["channel_name"] + '">' +
-            '<div class="ccr-gallery-ttile">' +
-            '<span></span>' +
-            '<p id="channelheading">' + obj[i]["channel_name"] + '</p>' +
-            '</div>' +
-            '</section>' +
+        if (i < limit){
+            var content_div = document.createElement('div');
+            content_div.setAttribute('class', ((i == 0) ? 'active ' : '') + 'item' );
+            content_div.innerHTML = '<div class="container slide-element">' +
+            '<img src="' + obj[i]["image_url"] + '"  width="530px" height="370px">' +
+            '<p><a href="' + utility.getUrlFor("news/view/" + obj[i]["news_id"] ) + '">' + obj[i]["title"] + '</a></p>' +
             '</div>';
-            if (!index_channels.counts[obj[i]["channel_name"]]){
-                index_channels.counts[obj[i]["channel_name"]] = 0;
-                index_channels.id[obj[i]["channel_id"]] = obj[i]["channel_name"];
-            }
-            main.appendChild(channel_container);
-            channelArray.push(obj[i]["channel_id"]);
+
+            // fill slider indicators
+            var list_item = document.createElement('li');
+            list_item.setAttribute('data-target', '#ccr-slide-main');
+            list_item.setAttribute('data-slide-to', i + '');
+            if (i == 0) list_item.setAttribute('class', 'active');
+
+            slider_div.appendChild(content_div);
+            slider_indicators.appendChild(list_item);
         }
+        else{
+            var news_div = document.createElement('div');
+            news_div.setAttribute('class', 'row');
+            news_div.setAttribute('id', 'side-news');
+            news_div.innerHTML = '<div class="col-md-1">' +
+            '<img src="' + obj[i]["image_url"] + '" alt="' + obj[i]["channel_name"] + obj[i]["news_id"]+ '" height="60px" width="60px">' +
+            '</div>' +
+            '<div class="col-md-10" id="channelnam">' +
+            '<span class="glyphicon glyphicon-thumbs-up">' + obj[i]["like_count"] + '</span>&nbsp;' +
+            '<span class="glyphicon glyphicon-comment">' + obj[i]["comment_count"] + '</span>&nbsp;' +
+            '<span class="glyphicon glyphicon-thumbs-down">' + obj[i]["dislike_count"] + '</span>&nbsp;' +
+            '<br><a href="' + utility.getUrlFor("channel/view/" + obj[i]["channel_id"]) + '" id="channelname">' + obj[i]["channel_name"] + '</a>' +
+            '<br> <span><a href="' + utility.getUrlFor("news/view/" + obj[i]["news_id"]) + '"  id="link-font">' + utility.shortenText(obj[i]["title"], 25) + '</a></span>'+
+            '</div>';
 
-        index_channels.lastIDs[obj[i]["channel_name"]] = obj[i]["news_id"];
-
-        //index_channels.counts[obj[i]["channel_name"]]++;
-        var news_div = document.createElement('div');
-        news_div.setAttribute('class', 'row');
-        news_div.setAttribute('id', 'side-news');
-        news_div.innerHTML = '<div class="col-md-1">' +
-        '<img src="' + obj[i]["image_url"] + '" alt="' + obj[i]["channel_name"] + obj[i]["news_id"]+ '" height="60px" width="60px">' +
-        '</div>' +
-        '<div class="col-md-10" id="channelnam">' +
-        '<span class="glyphicon glyphicon-thumbs-up">' + obj[i]["like_count"] + '</span>&nbsp;' +
-        '<span class="glyphicon glyphicon-comment">' + obj[i]["comment_count"] + '</span>&nbsp;' +
-        '<span class="glyphicon glyphicon-thumbs-down">' + obj[i]["dislike_count"] + '</span>&nbsp;' +
-        '<br><a href="' + utility.getUrlFor("channel/view/" + obj[i]["channel_id"]) + '" id="channelname">' + obj[i]["channel_name"] + '</a>' +
-        '<br> <span><a href="' + utility.getUrlFor("news/view/" + obj[i]["news_id"]) + '"  id="link-font">' + utility.shortenText(obj[i]["title"], 25) + '</a></span>'+
-        '</div>';
-
-        news_parent_div.appendChild(news_div);
+            news_parent_div.appendChild(news_div);
+        }
 
     }
 
