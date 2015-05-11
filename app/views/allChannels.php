@@ -46,7 +46,7 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
     <link href="<?php echo(Utility::getHrefFor('css/bootstrap.min.css')); ?>" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="<?php echo(Utility::getHrefFor('css/style.css')); ?>" rel="stylesheet">
+    <link href="<?php echo(Utility::getHrefFor('css/edited.css')); ?>" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -60,7 +60,6 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
 <body>
 
 <div id="wrapper">
-
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav" id="sidenav">
@@ -69,84 +68,61 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
                                                                     src="<?php echo(Utility::getHrefFor('img/maill.png')); ?>"
                                                                     height="55%" width="55%"></a>
             </li>
-
             <li>
                 <a href="<?php echo($url); ?>"><?php echo($link_name); ?></a>
             </li>
             <li>
                 <a href="<?php echo(Utility::getUrlFor('channel/all')); ?>">ALL CHANNELS</a>
             </li>
-
         </ul>
     </div>
-    <!-- /#sidebar-wrapper -->
-
-
     <!-- Page Content -->
     <div id="page-content-wrapper">
         <div class="container-fluid">
-            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle</a>
+            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><span
+                    class="glyphicon glyphicon-th-list"></span></a>
 
-            <div class="col-md-9" id="content">
-
-                <div class="container">
-                    <div class="col-md-9" id="main-head">
-
-                        <span><img src="<?php echo(Utility::getHrefFor('img/mail.png')); ?>" height="25%"
-                                   width="25%"><span class="pull-right"
-                                                     id="date"><?php echo(date('d/m/Y', time())); ?></span></span>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="hidden">
+                        <p id="cred"><?php echo($user_api_key . '_' . $user_id); ?></p>
                     </div>
+                    <div id="loading_div" style="display: none;">
+                        <img src="<?php echo(Utility::getHrefFor('img/load.gif')); ?>">
+                    </div>
+                    <section id="ccr-latest-post-gallery">
+                        <div class="ccr-gallery-ttile">
+                            <span></span>
+
+                            <p id="channelheading">ALL CHANNELS</p>
+                        </div>
+                        <!-- .ccr-gallery-ttile -->
+                        <div class="container col-md-12" id="allChannelStyle">
+                        </div>
+
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-12">-->
+<!--                                <a href="" class="btn btn-success" id="loadbutton">LOAD MORE</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </section>
                 </div>
+            </div>
+        </div>
 
-
-                <div class="container">
-                    <div class="col-md-9">
-
-
-                        <section id="ccr-latest-post-gallery">
-                            <div class="ccr-gallery-ttile">
-                                <span></span>
-
-                                <p>ALL CHANNELS</p>
-
-                                <div id="loading_div" style="display: none;">
-                                    <img src="<?php echo(Utility::getHrefFor('img/load.gif')); ?>">
-                                </div>
-                                <div class="hidden">
-                                    <p id="cred"><?php echo($user_api_key . '_' . $user_id); ?></p>
-                                </div>
-                            </div>
-                            <!-- .ccr-gallery-ttile -->
-
-                            <div class="container col-md-12" id="allChannelStyle">
-
-
-                            </div>
-
-
-                            <div class="container">
-                                <div class="col-md-9">
-                                    <a href="" class="btn btn-success" id="loadbutton">LOAD MORE</a>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="footer" id="footer">
+                    <p>&COPY;Webometrics 2015</p>
                 </div>
             </div>
         </div>
     </div>
-
+</div>
 </div>
 <!-- /#page-content-wrapper -->
 
-<!--footer -->
 
-<footer class="footer">
-    <div class="container" id="footer">
-        <p>&COPY;Webometrics 2015</p>
-    </div>
-</footer>
-<!--footer -->
 </div>
 <!-- /#wrapper -->
 
@@ -165,7 +141,7 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
         $("#wrapper").toggleClass("toggled");
     });
 
-    window.onload = setUp(PAGE.all_channels);
+    window.onload = function(){setUp(PAGE.all_channels)};
 </script>
 
 </body>

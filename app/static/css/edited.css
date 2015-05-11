@@ -14,11 +14,6 @@ body {
     min-width: 700px;
 }
 
-strong{
-
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    font-size: 120%;
-}
 .button{
     width:100px;
     background:#3399cc;
@@ -38,31 +33,18 @@ strong{
     background:#000;
 }
 
-
 #login{
     width:420px;
     margin:0 auto;
     margin-top:15%;
+    margin-bottom:2%;
     transition:opacity 1s;
     -webkit-transition:opacity 1s;
 }
-
-#loginn{
-    width:420px;
-    margin:0 auto;
-    margin-top:15%;
-    transition:opacity 1s;
-    -webkit-transition:opacity 1s;
-}
-
-#loginadmin{
- margin: 0 auto;
-}
-
-
 #login_admin{
     width:420px;
     margin:0 auto;
+    margin-top:120px;
     margin-right: 120px;
     margin-bottom:2%;
     transition:opacity 1s;
@@ -79,21 +61,13 @@ strong{
 }*/
 
 #login h1{
-    background-color:rgb(102, 142, 205);
+    background-color:#336699;
     padding:20px 0;
     font-size:140%;
+    font-weight:bold;
     text-align:center;
     color:#fff;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-}
-
-#loginn h1{
-    background-color:rgb(102, 142, 205);
-    padding:20px 0;
-    font-size:140%;
-    text-align:center;
-    color:#fff;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
 #login_admin h1{
@@ -107,47 +81,18 @@ strong{
 }
 
 #form{
-    padding:4% 4%;
+    padding:6% 4%;
     background: #fafafa;
-    height: 275px;
 }
 
-#formm{
-    padding:4% 4%;
-    background: #fafafa;
-    height: 300px;
-}
-#form_admin{
-    padding:4% 4%;
-    background: #fafafa;
-    height: 550px;
-}
-
-label{
-
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    color: #222222;
-    font-weight: lighter;
-}
-
-input[type="email"],input[type="password"],input[type="text"]{
-    width:90%;
+input[type="email"],input[type="password"]{
+    width:100%;
     background:#fff;
-    margin:2.5% 4% 0% 4%;
+    margin-bottom:4%;
     border:1px solid #ccc;
     padding:4%;
     font-size:95%;
     color:#555;
-}
-
-#news_image{
-    height: 200px !important;
-    width: auto;
-    margin-left: 200px;
-    text-align: center;
-
-
-
 }
 
 #newsrow{
@@ -155,15 +100,16 @@ input[type="email"],input[type="password"],input[type="text"]{
     margin-top: 2%;
 }
 
-#forgot{
-   margin-top: 20px;
-    margin-left: 16px;
+.forgot{
+    margin: 0px 0px 30px 5px;
 }
 
 input[type="submit"]{
     width:100%;
     background-color:#336699;
     border:0;
+    margin-top: 20px;
+    padding:4%;
     font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
     font-size:100%;
     font-weight: bold;
@@ -382,6 +328,7 @@ input[type="submit"]:hover{
     font-weight:bold;
     font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 150%;
+    margin-left: 2%;
 }
 #trendss{
 
@@ -390,6 +337,7 @@ input[type="submit"]:hover{
     font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 150%;
     margin-top: 2%;
+    margin-left: 2%;
 }
 
 ul{
@@ -398,7 +346,7 @@ ul{
 
 #sideinfo{
 
-    margin-top: 3%;
+    margin-top: 4.3%;
 }
 
 #sideinfo a{
@@ -436,6 +384,10 @@ ul{
     color: #9999FF;
 }
 
+#trend_news{
+    padding:15px;
+}
+
 #trends{
 
     background-color: black;
@@ -465,8 +417,8 @@ ul{
     display: block;
     margin: 0 auto;
     width:20%;
-    /*margin-top: 10%;*/
-    margin-bottom: 2%;
+    margin-top: 10%;
+    margin-bottom: 5%;
     padding-left: 1.1%;
     font-size: 80%;
     height: auto;
@@ -492,12 +444,7 @@ ul{
     height: 15%;
     margin-top: -.5%
 
-}
 
-.help-block{
-
-    color: #db0811;
-    margin-left: 18px;
 }
 #bold{
     font-weight: bold;
@@ -511,12 +458,16 @@ ul{
     margin-right: 50px;
 }
 #main-head{
-    background-color:rgb(102, 142, 205);
+    background-color:#336699;
     width: 100%;
+    /*height: 30% !important;*/
     margin-top: -2%;
     margin-left: 0%;
     padding: 1% 0% 0% 14%;
     /*clear: both;*/
+}
+#main-head img{
+    margin-left: 20%;
 }
 span #date{
 
@@ -536,24 +487,6 @@ span #date{
 .content{
     font-size: 120%;
 }
-
-#newbutton, #login_btn{
-    margin-top: 2%;
-    width: 44%;
-    height: 35px;
-    background-color: rgb(102, 142, 205);
-    color: #FFFFFF;
-    text-decoration: none;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-
-}
-
-#newdiv{
-
-    margin-left: 4%;
-    margin-right: 5%;
-}
-
 
 
 .ccr-gallery-ttile{
@@ -633,7 +566,7 @@ li:hover .ccr-thumbnail p{
     position: absolute;
     bottom: 0;
     background-color: rgba(0,0,0, .4);
-    /* width: 100%;*/
+   /* width: 100%;*/
     min-height: 60px;
     line-height: 60px;
     margin-bottom: 0px;
@@ -673,7 +606,7 @@ li:hover .ccr-thumbnail p{
 #ccr-slide-main .carousel-control:hover{
     background-color: #5f5f5f;
 }
-#rccr-latest-post-gallery{
+ccr-latest-post-gallery{
     overflow: hidden;;
 }
 #ccr-latest-post-gallery .ccr-latest-post{

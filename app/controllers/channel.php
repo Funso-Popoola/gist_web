@@ -27,4 +27,9 @@ class ChannelController extends Controller {
     public function all(){
         $this->view->render('allChannels');
     }
+
+    public function register(){
+        if (isset($_POST["channel_id"]))
+        $this->view->render('admin_register');
+    }
 } 
