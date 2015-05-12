@@ -8,6 +8,17 @@
 
 require_once (ROOT_DIR . '/app/libs/Utility.php');
 use libs\Utility;
+
+if (!isset($_SESSION)) {
+    session_start();
+}
+$user_id = 0;
+$user_api_key = 0;
+
+if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
+    $user_id = $_SESSION["user_id"];
+    $user_api_key = $_SESSION["user_api_key"];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +59,7 @@ use libs\Utility;
                     <span class="icon-bar"> </span>
 
                 </button>
-                <a href="index.php"><img src="<?php echo(Utility::getHrefFor('img/maill.png'));?>"  style="margin:0 auto"  width="60px" class="img pull-left "><a href="#" class="navbar-brand"><strong> &nbsp Gist Admin</strong></a></a>
+                <a href="<?php echo(Utility::getUrlFor());?>"><img src="<?php echo(Utility::getHrefFor('img/maill.png'));?>"  style="margin:0 auto"  width="60px" class="img pull-left "><a href="#" class="navbar-brand"><strong> &nbsp Gist Admin</strong></a></a>
             </div>
 
         </div>
@@ -57,6 +68,10 @@ use libs\Utility;
 </header>
 <div id="admin" class="center-block">
     <div class="row" id="loginadmin">
+        <div class="hidden">
+            <p id="cred"><?php echo($user_api_key . '_' . $user_id); ?></p>
+        </div>
+        <div id="magic_div"></div>
         <div id="loginn">
             <h1>Create Channel</h1>
             <form id="form_admin" class="form-control">
@@ -74,17 +89,20 @@ use libs\Utility;
                     <input type="text" id="channel_desc"/>
                     </div>
                 <div class="form-group">
+                    <img id="channel_img_display" src="<?php echo(Utility::getHrefFor('img/avatar.png'));?>"  width="150px" height="150px">
                     <label for="channel_img">Channel img</label>
                     <input type="file" id="channel_img"/>
-                    </div>
+
+                </div>
+
                 <br>
                 <div class="form-group">
                     <label for="pass_word">Password</label>
-                    <input type="text" id="pass_word"/>
+                    <input type="password" id="pass_word"/>
                     <p class="help-block">NOTE: Password is case-sensitive</p>
                     </div>
 
-                <button class="btn btn-default center-block"  type="submit" id="newbutton">Register</button>
+                <button class="btn btn-default center-block"  type="button" id="newbutton">Register</button>
         </div>
         </form>
     </div>
@@ -96,12 +114,15 @@ use libs\Utility;
 <!-- Bootstrap Core JavaScript -->
 <script src="<?php echo(Utility::getHrefFor('js/bootstrap.min.js')); ?>"></script>
 
+<script src="<?php echo(Utility::getHrefFor('js/lib.js')); ?>"></script>
+<script src="<?php echo(Utility::getHrefFor('js/pull_data.js')); ?>"></script>
 <!-- Menu Toggle Script -->
 <script>
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
+    window.onload = function(){setUp(PAGE.channel_register)};
 </script>
 
 </body>

@@ -13,6 +13,7 @@ var index_channels = {
     counts: {},
     lastIDs: {}
 };
+var last_comment_id = 0;
 
 var MAX_SLIDER_ITEMS = 5;
 var MAX_SIDE_NEWS_ITEMS = 5;
@@ -74,7 +75,7 @@ var URL = {
     admin_login: BASE_URL + "/channels/login?key=" + KEY.standard,
     local_login_file: "http://localhost/web/login/verify",
     user_register: BASE_URL + "/users/register?key=" + KEY.standard,
-    channel_register: BASE_URL + "/users/register?key=" + KEY.standard,
+    channel_register: BASE_URL + "/channels/create?key=" + KEY.standard,
     news: BASE_URL + "/news/news_by_id/_ID?key=" + KEY.standard,
     news_by_category: BASE_URL + "/news/category/_ID?key=" + KEY.standard,
     news_by_category_with_marker: BASE_URL + "/news/category/_ID?marker=_LAST&type=_TYPE&key=" + KEY.standard,
@@ -162,12 +163,21 @@ function likeNewsItem(news_id){
     var obj = asyncCaller[CALLER_INDEX.like].responseObj;
 
     if (obj && obj["info"]["error_code"] == 200){
-        removePreviousComment();
-        getter.getNews(news_id)
+        var like_btn = document.getElementById('news_like_btn');
+        like_btn.firstElementChild.innerText++;
+        like_btn.disabled = true;
+
+        var dislike_btn = document.getElementById('news_dislike_btn');
+        if (dislike_btn.disabled){
+            dislike_btn.firstElementChild.innerText--;
+            dislike_btn.disabled = false;
+        }
+        //removePreviousComment();
+        //getter.getNews(news_id)
     }
     else{
-        var error_div = document.getElementById('error_div');
-        error_div.setAttribute('class', error_div.getAttribute('class').replace(' hidden', ''));
+        //var error_div = document.getElementById('error_div');
+        //error_div.setAttribute('class', error_div.getAttribute('class').replace(' hidden', ''));
     }
 }
 
@@ -175,12 +185,21 @@ function dislikeNewsItem(news_id){
     var obj = asyncCaller[CALLER_INDEX.dislike].responseObj;
 
     if (obj && obj["info"]["error_code"] == 200){
-        removePreviousComment();
-        getter.getNews(news_id);
+        var dislike_btn = document.getElementById('news_dislike_btn');
+        dislike_btn.firstElementChild.innerText++;
+        dislike_btn.disabled = true;
+
+        var like_btn = document.getElementById('news_like_btn');
+        if (like_btn.disabled){
+            like_btn.firstElementChild.innerText--;
+            like_btn.disabled = false;
+        }
+        //removePreviousComment();
+        //getter.getNews(news_id);
     }
     else{
-        var error_div = document.getElementById('error_div');
-        error_div.setAttribute('class', error_div.getAttribute('class').replace(' hidden', ''));
+        //var error_div = document.getElementById('error_div');
+        //error_div.setAttribute('class', error_div.getAttribute('class').replace(' hidden', ''));
     }
 }
 
@@ -188,9 +207,11 @@ function commentOnNewsItem(news_id){
     var obj = asyncCaller[CALLER_INDEX.comment].responseObj;
 
     if (obj && obj["info"]["error_code"] == 200){
-        removePreviousComment();
+        //removePreviousComment();
         getter.getNews(news_id);
-        getter.getComment(news_id);
+        //getter.getComment(news_id);
+
+
     }
     else{
         var error_div = document.getElementById('error_div');
@@ -282,13 +303,12 @@ function registerUser(){
 }
 
 function registerChannel(){
-    var obj = asyncCaller[CALLER_INDEX.channel_register].responseObj["feedback"];
+    var obj = asyncCaller[CALLER_INDEX.channel_register].responseObj;
 
-    if (obj["info"]["error_code"] == 201){
+    if (obj["info"]["error_code"] == 200){
         var magic_div = document.getElementById('magic_div');
-        magic_div.innerHTML = '<form id="magic_form" method="POST" action="' + utility.getUrlFor("login/verify") + '">' +
-        '<input class="hidden" type="text" name="user_id" value="' + obj["user_id"] + '">' +
-        '<input class="hidden" type="text" name="user_api_key" value="' + obj["api_key"] + '">' +
+        magic_div.innerHTML = '<form id="magic_form" method="POST" action="' + utility.getUrlFor("admin/verify") + '">' +
+        '<input class="hidden" type="text" name="user_id" value="' + obj["feedback"]["channel_id"] + '">' +
         '</form>';
         var form = document.getElementById('magic_form');
         if (form)
@@ -297,6 +317,7 @@ function registerChannel(){
     else{
         var error_div = document.getElementById('error_div');
         error_div.setAttribute('class', error_div.getAttribute('class').replace(' hidden', ''));
+        error_div.firstElementChild.innerHTML = obj["info"]["message"];
     }
 }
 
@@ -358,7 +379,7 @@ EventCallBack.prototype.dislike = function(news_id){
 
 EventCallBack.prototype.comment = function(news_id){
     var caller = asyncCaller[CALLER_INDEX.comment];
-    processResponse(caller, commentOnNewsItem(news_id));
+    processResponse(caller, function(){commentOnNewsItem(news_id)});
 };
 
 EventCallBack.prototype.onLoadStart = function(){
@@ -477,9 +498,13 @@ var Getter = function(){};
 
 Getter.prototype.getNews = function(news_id){
     if (!asyncCaller[CALLER_INDEX.news])
-        asyncCaller[CALLER_INDEX.news ] = new AsyncCaller();
+        asyncCaller[CALLER_INDEX.news] = new AsyncCaller();
+    var url = (URL.news).replace('_ID', news_id);
+    if (user_api_key != null && user_api_key != 0){
+        url = url.replace(KEY.standard, user_api_key);
+    }
     asyncCaller[CALLER_INDEX.news]
-        .prepareRequest(Method.GET, (URL.news).replace('_ID', news_id), eventCallBack.parseNews);
+        .prepareRequest(Method.GET, url, eventCallBack.parseNews);
     asyncCaller[CALLER_INDEX.news].makeRequest(null, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
@@ -493,7 +518,7 @@ Getter.prototype.getCategories = function(){
 };
 
 Getter.prototype.getComment = function(news_id){
-    removePreviousComment();
+    //removePreviousComment();
     if (!asyncCaller[CALLER_INDEX.comment])
         asyncCaller[CALLER_INDEX.comment ] = new AsyncCaller();
     asyncCaller[CALLER_INDEX.comment]
@@ -541,8 +566,8 @@ Getter.prototype.getChannelDetails = function(channel_id){
 
     var url = (URL.channel_details).replace('_ID', channel_id);
 
-    if (user_api_key && user_api_key != 0){
-        url.replace(KEY.standard, user_api_key);
+    if (user_api_key!=null && user_api_key != 0){
+        url = url.replace(KEY.standard, user_api_key);
     }
 
     asyncCaller[CALLER_INDEX.channel]
@@ -677,28 +702,26 @@ Filler.prototype.fillNews = function (){
     if (img_element.src != DEFAULT_IMG_URL.news) img_element.setAttribute('class', 'block');
     news_title_element.innerHTML = obj["title"];
     news_content_element.innerHTML = obj["content"];
-    num_of_likes.innerText = obj["like_count"];
+
     num_of_comments.innerText = obj["comment_count"];
-    num_of_dislikes.innerText = obj["dislike_count"];
+
 
     var like_btn = document.getElementById('news_like_btn');
     var dislike_btn = document.getElementById('news_dislike_btn');
     var add_comment_btn = document.getElementById('add_comment_btn');
 
-    if (parseInt(obj["channel_id"]) == 1){
-        var news_like_btn = document.getElementById('news_like_btn');
-        var news_dislike_btn = document.getElementById('news_dislike_btn');
 
-        if (news_like_btn) news_like_btn.remove();
-        if (news_dislike_btn) news_dislike_btn.remove();
-        return;
+    if (user_api_key != null && user_api_key != 0){
+        if ("true" == obj["liked"]){
+            like_btn.disabled = true;
+        }
+        if ("true" == obj["disliked"]){
+            dislike_btn.disabled = true;
+        }
     }
 
     var news_id = obj["news_id"];
     if (news_id){
-        like_btn.onclick = function(){poster.likeNews(news_id)};
-        dislike_btn.onclick = function(){poster.dislikeNews(news_id)};
-
         if (add_comment_btn){
             add_comment_btn.onclick = function(){
                 var comment = document.getElementById("comment");
@@ -706,7 +729,26 @@ Filler.prototype.fillNews = function (){
                 comment.value = "";
             };
         }
+
+        // keep polling comments
         getter.getComment(news_id);
+    }
+
+    if (parseInt(obj["channel_id"]) == 1){
+        var news_like_btn = document.getElementById('news_like_btn');
+        var news_dislike_btn = document.getElementById('news_dislike_btn');
+
+        if (news_like_btn) news_like_btn.remove();
+        if (news_dislike_btn) news_dislike_btn.remove();
+    }
+    else{
+        num_of_likes.innerText = obj["like_count"];
+        num_of_dislikes.innerText = obj["dislike_count"];
+        if (news_id){
+            like_btn.onclick = function(){poster.likeNews(news_id)};
+            dislike_btn.onclick = function(){poster.dislikeNews(news_id)};
+        }
+
     }
 
 };
@@ -722,6 +764,11 @@ Filler.prototype.fillComments = function (){
     }
 
     for (var i = 0; i < obj.length; i++){
+
+        if (parseInt(obj[i]["comment_id"]) <= last_comment_id){
+            continue;
+        }
+        console.log("LAST_COMMENT_ID  === >" + last_comment_id);
         var content = '<div class="comment-authore col-md-1">' +
             '<img src="' + obj[i]["image_url"] +'" alt="' + obj[i]["username"] + '">' +
             '</div>'+
@@ -745,7 +792,10 @@ Filler.prototype.fillComments = function (){
         var div = document.createElement('div');
         div.innerHTML = content;
         comment_div.appendChild(div);
+        last_comment_id = obj[i]["comment_id"];
     }
+
+
 };
 
 Filler.prototype.fillCategories = function (){
@@ -1445,21 +1495,22 @@ Poster.prototype.postUserRegistrationDetails = function(){
 };
 
 Poster.prototype.postChannelRegistrationDetails = function(){
-    this.preventDefault();
     if (!(user_api_key != null && user_api_key != 0))
         return;
 
     var channel_name = document.getElementById('channel_name');
-    var description = document.getElementById('desc');
-    var username = document.getElementById('username');
-    var password = document.getElementById('password');
-    var channel_img_url = "";
+    var description = document.getElementById('channel_desc');
+    var username = document.getElementById('user_name');
+    var password = document.getElementById('pass_word');
+    var channel_img = document.getElementById('channel_img');
+    var channel_img_url = channel_img.files[0];
+
 
     var data = new FormData();
-    data.append("channel_name", channel_name);
-    data.append("username", username);
-    data.append("description", description);
-    data.append("password", password);
+    data.append("channel_name", channel_name.value);
+    data.append("username", username.value);
+    data.append("description", description.value);
+    data.append("password", password.value);
     data.append("channel_img_url", channel_img_url);
 
     if (!asyncCaller[CALLER_INDEX.channel_register])
@@ -1573,7 +1624,9 @@ function setUp(page){
 function fireCalls(page){
     current_page = page;
 
-    if (current_page != PAGE.admin_home && current_page != PAGE.admin_login){
+    if (current_page != PAGE.admin_home
+        && current_page != PAGE.admin_login
+        && current_page != PAGE.channel_register){
         // get the side nav loaded
         getter.getCategories();
     }
@@ -1607,6 +1660,17 @@ function fireCalls(page){
         case PAGE.channel_register:
             var channel_register_btn = document.getElementById('newbutton');
             channel_register_btn.onclick = poster.postChannelRegistrationDetails;
+            var channel_img = document.getElementById('channel_img');
+            var channel_img_display = document.getElementById('channel_img_display');
+            channel_img.onchange = function(){
+                var fileReader = new FileReader();
+                fileReader.onload = function(){
+                    if (fileReader.readyState == 2){
+                        channel_img_display.src = fileReader.result;
+                    }
+                };
+                fileReader.readAsDataURL(this.files[0]);
+            };
             break;
         case PAGE.channels:
             var channelId = document.getElementById('channel_id').innerText;
@@ -1647,10 +1711,8 @@ function fireCalls(page){
                         }
                     };
                     fileReader.readAsDataURL(this.files[0]);
-
                 };
             }
-
             break;
         default :
             console.log('Unknown Page');

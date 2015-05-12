@@ -109,7 +109,7 @@ use libs\Utility;
         $("#wrapper").toggleClass("toggled");
     });
 
-    window.onload = setUp(PAGE.user_register);
+    window.onload = function(){setUp(PAGE.user_register)};
 </script>
 
 </body>

@@ -125,12 +125,12 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
                                     </div>
 
                                     <div class="row" id="news-button">
-                                        <button id="news_like_btn" class="btn btn-success" <?php echo(($user_id == 0) ? 'disabled' : '');?>><span class="glyphicon glyphicon-thumbs-up" id="num_of_likes">56</span>
+                                        <button id="news_like_btn" class="btn btn-success" <?php echo(($user_id == 0) ? 'disabled' : '');?>><span class="glyphicon glyphicon-thumbs-up" id="num_of_likes"></span>
                                         </button>
                                         &nbsp;
-                                        <button class="btn btn-default" disabled><span class="glyphicon glyphicon-comment" id="num_of_comments">100</span></button>
+                                        <button class="btn btn-default" disabled><span class="glyphicon glyphicon-comment" id="num_of_comments"></span></button>
                                         &nbsp;
-                                        <button id="news_dislike_btn" class="btn btn-warning" <?php echo(($user_id == 0) ? 'disabled' : '');?>><span class="glyphicon glyphicon-thumbs-down" id="num_of_dislikes">20</span>
+                                        <button id="news_dislike_btn" class="btn btn-warning" <?php echo(($user_id == 0) ? 'disabled' : '');?>><span class="glyphicon glyphicon-thumbs-down" id="num_of_dislikes"></span>
                                         </button>
                                         &nbsp;
                                     </div>
