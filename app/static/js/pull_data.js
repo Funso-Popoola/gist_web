@@ -769,8 +769,8 @@ Filler.prototype.fillComments = function (){
             continue;
         }
         console.log("LAST_COMMENT_ID  === >" + last_comment_id);
-        var content = '<div class="comment-authore col-md-1">' +
-            '<img src="' + obj[i]["image_url"] +'"alt="' + obj[i]["username"] + '"class="img-circle"' +'">' +
+        var content = '<div class="well well-sm">'+'<div class="comment-authore col-md-1">' +
+            '<img src="' + obj[i]["image_url"] +'"alt="' + obj[i]["username"] + '"class="img-responsive"' +'">' +
             '</div>'+
             '<div>' +
             '<header>' +
@@ -778,7 +778,7 @@ Filler.prototype.fillComments = function (){
             '<span class="author publisher-anchor-color">' + obj[i]["username"] + '</span>' +
             '</span>' +
             '<span class="post-meta">' +
-            '<span class="bullet time-ago-bullet" aria-hidden="true">•</span>' +
+            '<span class="bullet time-ago-bullet" aria-hidden="true"> &nbsp; </span>' +
             '<a href="#">' + utility.getRelativeTime(obj[i]["created_at"]) + '</a>' +
             '</span>' +
             '</header>' +
@@ -787,6 +787,7 @@ Filler.prototype.fillComments = function (){
             '<div class="comment-content">' +
             '<p>' + obj[i]["comment_content"] + '</p>' +
             '</div>' +
+            '</div>'+
             '</div>';
 
         var div = document.createElement('div');

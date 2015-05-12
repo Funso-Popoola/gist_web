@@ -110,7 +110,11 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
                     </div>
                     <div class="col-md-5">
                         <div id="sideinfo">
-
+                            <div class="well well-sm">
+                                <div class="side-news">
+                                    
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
