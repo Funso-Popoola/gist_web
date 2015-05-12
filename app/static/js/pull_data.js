@@ -770,7 +770,7 @@ Filler.prototype.fillComments = function (){
         }
         console.log("LAST_COMMENT_ID  === >" + last_comment_id);
         var content = '<div class="comment-authore col-md-1">' +
-            '<img src="' + obj[i]["image_url"] +'" alt="' + obj[i]["username"] + '">' +
+            '<img src="' + obj[i]["image_url"] +'"alt="' + obj[i]["username"] + '"class="img-circle"' +'">' +
             '</div>'+
             '<div>' +
             '<header>' +
@@ -1204,7 +1204,7 @@ Filler.prototype.fillAllNews = function(){
             '<section id="channel_' + obj[i]["channel_name"] + '">' +
             '<div class="ccr-gallery-ttile">' +
             '<span></span>' +
-            '<p id="channelheading">' + obj[i]["channel_name"] + '</p>' +
+            '<p id="channelheading">' + obj[i]["channel_name"] + '<button class="btn btn-info pull-right"> view all </button>'+ '</p>' +
             '</div>' +
             '</section>' +
             '</div>';
