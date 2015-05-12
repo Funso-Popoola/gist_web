@@ -142,12 +142,10 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
                                         <section id="ccr-commnet">
                                             <div class="ccr-gallery-ttile">
                                                 <span class="bottom"></span>
-
                                                 <p id="comment_heading">Comments</p>
                                                 <p class="hidden text-center" id="no_comment_heading">No Comment Yet <?php echo(($user_id != 0) ? "Be the first to Comment!" : "");?></p>
                                             </div>
                                             <!-- .ccr-gallery-ttile -->
-
                                         </section>
                                         <!-- /#ccr-commnet -->
                                     </div>
@@ -188,6 +186,12 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
 
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="footer" id="footer">
+                    <p>&COPY;Webometrics 2015</p>
+                </div>
+            </div>
     </div>
 </div>
 <!-- page content wrapper  -->
@@ -195,11 +199,11 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
 
 <!--footer -->
 
-<footer class="footer">
+<!--<footer class="footer">
     <div class="container" id="footer">
         <p>&COPY;Webometrics 2015</p>
     </div>
-</footer>
+</footer>-->
 <!--footer -->
 </div>
 <!-- /#wrapper -->

@@ -734,12 +734,24 @@ li:hover .ccr-thumbnail p{
     float:left;
 
 }
+.post-meta{
+    background-color: #000000;
+    margin-left: 50%;
+}
+.post-byline{
+    font-weight: bolder;
+    font-size: 25px;
+}
+.well{
+    margin-top: -3px;
+    margin-bottom: auto;
+}
 #logout{
     color: white;
     margin-top: 2%;
 }
 .comment-authore img{
-    width:50px;
+    width:100%;
     height:100%;
     margin-bottom:5px;
     box-shadow: 0 0 1px rgba(0,0,0,.3);
