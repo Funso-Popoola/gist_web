@@ -308,7 +308,7 @@ function registerChannel(){
     if (obj["info"]["error_code"] == 200){
         var magic_div = document.getElementById('magic_div');
         magic_div.innerHTML = '<form id="magic_form" method="POST" action="' + utility.getUrlFor("admin/verify") + '">' +
-        '<input class="hidden" type="text" name="user_id" value="' + obj["feedback"]["channel_id"] + '">' +
+        '<input class="hidden" type="text" name="channel_id" value="' + obj["feedback"]["channel_id"] + '">' +
         '</form>';
         var form = document.getElementById('magic_form');
         if (form)
@@ -324,7 +324,7 @@ function registerChannel(){
 function deleteNewsItem(news_id){
     var obj = asyncCaller[CALLER_INDEX.delete_news].responseObj;
 
-    if (obj["info"]["error_code"] == 200){
+    if (obj["info"]["error_code"] == 200 && obj["info"]["message"].indexOf("not") < 0){
         var news_div = document.getElementById('delete_btn_' + news_id).parentElement.parentElement.parentElement;
         news_div.remove();
     }
@@ -480,7 +480,7 @@ EventCallBack.prototype.parseAdminEditProfile = function(){
 };
 
 EventCallBack.prototype.deleteAdminPostItem = function(news_id){
-    var caller = asyncCaller[CALLER_INDEX.all_news];
+    var caller = asyncCaller[CALLER_INDEX.delete_news];
     processResponse(caller, function(){deleteNewsItem(news_id);});
 };
 

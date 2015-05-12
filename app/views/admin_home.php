@@ -145,6 +145,9 @@ if (isset($_SESSION['channel_id'])) {
                     <div><button id="addPost" class="btn btn-info pull-right">Add Post &nbsp;<span class="glyphicon glyphicon-plus-sign"></span></button></div>
 
                     <div class="hidden" id="channel_id"><?php echo($channel_id); ?></div>
+                    <div class="hidden">
+                        <p id="cred"><?php echo($user_api_key . '_' . $user_id); ?></p>
+                    </div>
                     <div id="postlist">
                         <ul>
 
