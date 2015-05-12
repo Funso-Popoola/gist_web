@@ -138,7 +138,7 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
 
 
                                 <div class="row" id="existing_comments">
-                                    <div class="col-md-12">
+                                    <div class="news-container col-md-12">
                                         <section id="ccr-commnet">
                                             <div class="ccr-gallery-ttile">
                                                 <span class="bottom"></span>

@@ -67,8 +67,9 @@ if (isset($_SESSION['channel_id'])) {
 
                 </button>
                 <a href="index.php"><img src="<?php echo(Utility::getHrefFor('img/maill.png'));?>"  style="margin:0 auto"  width="60px" class="img pull-left "><a href="#" class="navbar-brand"><strong> &nbsp Gist Admin</strong></a></a>
-            </div>
 
+            </div>
+            ,<a href="#"><span class="pull-right glyphicon glyphicon-log-out" id="logout">Logout</span></a>
         </div>
     </div>
 

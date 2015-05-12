@@ -122,7 +122,9 @@ strong{
     background: #fafafa;
     height: 550px;
 }
-
+.news-container{
+    height: auto;
+}
 label{
 
     font-family: "Comic Sans MS", cursive, sans-serif;
@@ -180,8 +182,6 @@ input[type="submit"]:hover{
 
 
 /* end of login style*/
-
-
 
 #search {
     border-color: gray;
@@ -734,8 +734,12 @@ li:hover .ccr-thumbnail p{
     float:left;
 
 }
+#logout{
+    color: white;
+    margin-top: 2%;
+}
 .comment-authore img{
-    width:100%;
+    width:50px;
     height:100%;
     margin-bottom:5px;
     box-shadow: 0 0 1px rgba(0,0,0,.3);

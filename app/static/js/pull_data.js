@@ -1155,7 +1155,7 @@ Filler.prototype.fillAllNews = function(){
             '<section id="channel_' + obj[i]["channel_name"] + '">' +
             '<div class="ccr-gallery-ttile">' +
             '<span></span>' +
-            '<p id="channelheading">' + obj[i]["channel_name"] + '</p>' +
+            '<p id="channelheading">' + obj[i]["channel_name"] + '<button class="btn btn-info pull-right"> view all </button>'+ '</p>' +
             '</div>' +
             '</section>' +
             '</div>';
