@@ -723,7 +723,7 @@ Filler.prototype.fillComments = function (){
 
     for (var i = 0; i < obj.length; i++){
         var content = '<div class="comment-authore col-md-1">' +
-            '<img src="' + obj[i]["image_url"] +'" alt="' + obj[i]["username"] + '">' +
+            '<img src="' + obj[i]["image_url"] +'"alt="' + obj[i]["username"] + '"class="img-circle"' +'">' +
             '</div>'+
             '<div>' +
             '<header>' +
