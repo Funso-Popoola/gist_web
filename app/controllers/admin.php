@@ -49,6 +49,14 @@ class AdminController extends Controller {
         $this->view->render('admin_login');
     }
 
+    public function logout(){
+        if (!isset($_SESSION)){
+            session_start();
+        }
+        unset($_SESSION["channel_id"]);
+        header("Location: " . Utility::getUrlFor());
+    }
+
     public function register(){
         if (!isset($_SESSION)){
             session_start();
