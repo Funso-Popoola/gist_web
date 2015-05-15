@@ -110,10 +110,8 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
                     </div>
                     <div class="col-md-5">
                         <div id="sideinfo">
-                            <div class="well well-sm">
-                                <div class="side-news">
-                                    
-                                </div>
+                            <div class="side-news">
+
                             </div>
                         </div>
                     </div>
@@ -133,6 +131,7 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
                 </div>
             </div>
         </div>
+        <div class="modal-loading"></div>
         <div class="row">
             <div class="col-md-12">
                 <div class="footer" id="footer">

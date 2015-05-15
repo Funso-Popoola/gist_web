@@ -169,21 +169,21 @@ if (isset($_SESSION['channel_id'])) {
                     <!-- start the form for home settings -->
 
                     <div class="form-group">
-                        <label id="channelname">CHANNEL NAME:</label><br>
-                        <input type="text" class="form-control" placeholder="Enter desired name here">
+                        <label id="channelname" for="adminChannelName">CHANNEL NAME:</label><br>
+                        <input id="adminChannelName" type="text" class="form-control" placeholder="Enter desired name here">
                     </div>
 
                     <div>
                         <p id="channelname">IMAGE:</p>
-                        <img src="../static/img/img.jpeg" width="150px" height="150px">
-                        <input type="file">
+                        <img id="adminNewPostImgDisplay" src="<?php echo(Utility::getHrefFor('img/avatar.png'));?>" width="150px" height="150px">
+                        <input id="adminProfileImg" type="file">
                     </div><br>
 
 
 
                     <div class="form-group">
-                        <label id="channelname">DESCRIPTION:</label><br>
-                        <textarea class="form-control" rows="8"></textarea>
+                        <label id="channelname" for="adminProfileDesc">DESCRIPTION:</label><br>
+                        <textarea id="adminProfileDesc" class="form-control" rows="8"></textarea>
                     </div>
 
 
@@ -202,6 +202,7 @@ if (isset($_SESSION['channel_id'])) {
     </div>
 </div>
 </div>
+<div class="modal-loading"></div>
 
 <!-- jQuery -->
 <script src="<?php echo(Utility::getHrefFor('js/jquery.js'));?>"></script>

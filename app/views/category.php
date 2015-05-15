@@ -104,6 +104,7 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
             </div>
 
         </div>
+        <div class="modal-loading"></div>
         <div class="row">
             <div class="col-md-12">
                 <div class="footer" id="footer">

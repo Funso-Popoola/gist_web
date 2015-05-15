@@ -198,12 +198,12 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
 
 
 <!--footer -->
-
-<!--<footer class="footer">
+    <div class="modal-loading"></div>
+<footer class="footer">
     <div class="container" id="footer">
         <p>&COPY;Webometrics 2015</p>
     </div>
-</footer>-->
+</footer>
 <!--footer -->
 </div>
 <!-- /#wrapper -->

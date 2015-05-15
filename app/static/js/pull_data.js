@@ -14,6 +14,7 @@ var index_channels = {
     lastIDs: {}
 };
 var last_comment_id = 0;
+var last_channel_news_id = 0;
 
 var MAX_SLIDER_ITEMS = 5;
 var MAX_SIDE_NEWS_ITEMS = 5;
@@ -88,8 +89,8 @@ var URL = {
     all_news_with_marker: BASE_URL + "/news?marker=_LAST_ID&type=_TYPE&key=" + KEY.standard,
     channel_details: BASE_URL + "/channels/_ID?key=" + KEY.standard,
     trending_news: BASE_URL + "/news/trending?key=" + KEY.standard,
-    admin_add_news: BASE_URL + "/news/add?key=_API_KEY",
-    admin_edit_profile: BASE_URL + "/channels/edit_profile?key=_API_KEY",
+    admin_add_news: BASE_URL + "/news/add?key=" + KEY.standard,
+    admin_edit_profile: BASE_URL + "/channels/edit_profile?key=" + KEY.standard,
     comments: BASE_URL + "/comments/_ID?key=" + KEY.standard,
     all_channels: BASE_URL + "/channels?key=" + KEY.standard,
     my_subscriptions: BASE_URL + "/subscriptions?key=" + KEY.standard,
@@ -146,6 +147,10 @@ function adminLogin(){
         var error_div = document.getElementById('error_div');
         error_div.setAttribute('class', error_div.getAttribute('class').replace(' hidden', ''));
     }
+
+}
+
+function editChannelProfile(){
 
 }
 
@@ -353,8 +358,8 @@ function processResponse(caller, callback){
         caller.responseObj = responseObject;
         callback();
     }
-    else
-        console.log("No data");
+    //else
+        //console.log("No data");
 }
 
 EventCallBack.prototype.subscribe = function(channel_id){
@@ -383,15 +388,17 @@ EventCallBack.prototype.comment = function(news_id){
 };
 
 EventCallBack.prototype.onLoadStart = function(){
-    console.log("LOAD STARTS");
     var body = document.getElementsByTagName('body')[0];
     body.setAttribute('class', 'loading');
+        var loading_div = document.getElementsByClassName('modal-loading')[0];
+    loading_div.style.display = "block";
 };
 
 EventCallBack.prototype.onLoadEnd = function(){
-    console.log("LOAD END");
     var body = document.getElementsByTagName('body')[0];
     body.setAttribute('class', body.getAttribute('class').replace('loading', ''));
+    var loading_div = document.getElementsByClassName('modal-loading')[0];
+    loading_div.style.display = "none";
 };
 
 EventCallBack.prototype.parseNews = function (){
@@ -469,14 +476,14 @@ EventCallBack.prototype.parseAdminPosts = function(){
     var caller = asyncCaller[CALLER_INDEX.admin_home];
     processResponse(caller, filler.fillAdminPosts);
 };
-EventCallBack.prototype.parseAdminAddNews = function(){
+EventCallBack.prototype.parseAdminAddNews = function(channel_id){
     var caller = asyncCaller[CALLER_INDEX.admin_add_news];
-    processResponse(caller, filler.fillAdminNews);
+    processResponse(caller, function(){filler.fillAdminNews(channel_id)});
 };
 
 EventCallBack.prototype.parseAdminEditProfile = function(){
     var caller = asyncCaller[CALLER_INDEX.admin_edit_profile];
-    processResponse(caller, filler.fillAllNews);
+    processResponse(caller, editChannelProfile);
 };
 
 EventCallBack.prototype.deleteAdminPostItem = function(news_id){
@@ -1000,9 +1007,27 @@ Filler.prototype.fillTrendingNews = function(){
 
 Filler.prototype.fillChannelDetails = function(){
     var obj = asyncCaller[CALLER_INDEX.channel].responseObj["data"][0];
-    var channel_name = document.getElementById('channelheading');
-    var channel_image = document.getElementById('channel_image');
-    var channel_desc = document.getElementById('channel_desc');
+    var channel_name, channel_image, channel_desc;
+
+    if (current_page == PAGE.admin_home){
+        channel_name = document.getElementById('adminChannelName');
+        if (channel_name){
+            channel_name.value = obj["channel_name"];
+        }
+        channel_image = document.getElementById('adminNewPostImgDisplay');
+        if (channel_image){
+            channel_image.src = obj["channel_img_url"];
+        }
+        channel_desc = document.getElementById('adminProfileDesc');
+        if (channel_desc){
+            channel_desc.innerText = obj["description"];
+        }
+        return;
+    }
+
+    channel_name = document.getElementById('channelheading');
+    channel_image = document.getElementById('channel_image');
+    channel_desc = document.getElementById('channel_desc');
     var btn_paragraph = document.getElementById('btn_paragraph');
 
     channel_name.innerText = obj["channel_name"];
@@ -1145,19 +1170,33 @@ Filler.prototype.fillAdminPosts = function(){
 
     var parent = document.getElementById('postlist').firstElementChild;
 
-    for (var i= 0; i < obj.length; i++){
+    var first_child;
 
-        var li = document.createElement('li');
+    for (var i = (obj.length - 1); i >= 0; i--){
+
         var news_id = obj[i]["news_id"];
 
-        li.innerHTML =
-                '<div>' +
+        if (parseInt(news_id) <= parseInt(last_channel_news_id))
+            continue;
+
+        var li = document.createElement('li');
+
+        li.innerHTML ='<div>' +
                 '<p id="channelname">' + utility.shortenText(obj[i]["title"], 100) + '</p>' +
                 '<p>' + '<a href="' + utility.getUrlFor("news/view/" + obj[i]["news_id"]) + '">' + utility.shortenText(obj[i]["content"], 200) + '</a>' +
                 '<button id="delete_btn_' + obj[i]["news_id"] + '" class="btn btn-danger pull-right delete_btn" id="delbutton">Delete&nbsp;<span class="glyphicon glyphicon-trash"></span></button></p>' +
                 '</div>';
 
-        parent.appendChild(li);
+        first_child = parent.firstElementChild;
+        if (!first_child){
+            parent.appendChild(li);
+        }
+        else{
+            var hr = document.createElement('hr');
+            parent.insertBefore(hr, first_child);
+
+            parent.insertBefore(li, hr);
+        }
 
         var delete_btn = document.getElementById('delete_btn_' + obj[i]["news_id"]);
         if (delete_btn){
@@ -1167,10 +1206,11 @@ Filler.prototype.fillAdminPosts = function(){
             };
         }
 
-        if (i != obj.length - 1){
-            var hr = document.createElement('hr');
-            parent.appendChild(hr);
+        if (i != 0){
+
         }
+
+        last_channel_news_id = news_id;
 
     }
 
@@ -1383,11 +1423,11 @@ Filler.prototype.fillSubscriptions = function(){
     //getter.getUserNewsFeed(user_api_key);
 };
 
-Filler.prototype.fillAdminNews = function(){
+Filler.prototype.fillAdminNews = function(channel_id){
     var obj = asyncCaller[CALLER_INDEX.admin_add_news].responseObj;
 
-    if (obj["info"]["error_code"] == 200){
-
+    if (obj["info"]["error_code"] == 400){
+        getter.getAdminPosts(channel_id);
     }else{
 
     }
@@ -1414,29 +1454,37 @@ Poster.prototype.postAdminNews = function(channel_id){
 
     if(!asyncCaller[CALLER_INDEX.admin_add_news])
         asyncCaller[CALLER_INDEX.admin_add_news] = new AsyncCaller();
+
+    var url = URL.admin_add_news;
+    if (user_api_key != null && user_api_key != 0){
+        url = url.replace(KEY.standard, user_api_key);
+    }
     asyncCaller[CALLER_INDEX.admin_add_news]
-        .prepareRequest(Method.POST, URL.admin_add_news, eventCallBack.parseAdminAddNews);
+        .prepareRequest(Method.POST, url, function(){eventCallBack.parseAdminAddNews(channel_id)});
     asyncCaller[CALLER_INDEX.admin_add_news].makeRequest(post, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
 Poster.prototype.postAdminProfile = function(channel_id){
-    this.preventDefault();
+    //this.preventDefault();
     var channel_name_element = document.getElementById("adminChannelName");
     var description_element =  document.getElementById("adminProfileDesc");
-    var upload_file = document.getElementById("profileFile").value;
-    var img_element = document.getElementsByClassName("adminProfileImage");
-    var display_img = document.getElementById('adminNewPostImgDisplay');
+    var upload_file = document.getElementById("adminProfileImg");
 
     var data = new FormData();
     data.append("channel_name", channel_name_element.value);
     data.append("channel_id", channel_id);
-    data.append("channel_img_url", upload_file);
+    data.append("channel_img_url", upload_file.files[0]);
     data.append("description",description_element.value);
 
     if(!asyncCaller[CALLER_INDEX.admin_edit_profile])
         asyncCaller[CALLER_INDEX.admin_edit_profile] = new AsyncCaller();
+    var url = URL.admin_edit_profile;
+    if (user_api_key != null && user_api_key != 0){
+        url = url.replace(KEY.standard, user_api_key);
+    }
+
     asyncCaller[CALLER_INDEX.admin_edit_profile]
-        .prepareRequest(Method.POST, URL.admin_edit_profile, eventCallBack.parseAdminEditProfile);
+        .prepareRequest(Method.POST, url, eventCallBack.parseAdminEditProfile);
     asyncCaller[CALLER_INDEX.admin_edit_profile].makeRequest(data, eventCallBack.onLoadStart, eventCallBack.onLoadEnd);
 };
 
@@ -1693,13 +1741,14 @@ function fireCalls(page){
             getter.getCategories();
             var channel_id = parseInt(document.getElementById('channel_id').innerText);
             getter.getAdminPosts(channel_id);
+            getter.getChannelDetails(channel_id);
             var publish = document.getElementById("adminNewPostPublish");
             publish.onclick = function(){
-                poster.postAdminNews();
+                poster.postAdminNews(channel_id);
             };
             var saveButton = document.getElementById("adminSave");
             saveButton.onclick = function(){
-                poster.postAdminProfile();
+                poster.postAdminProfile(channel_id);
             };
             var news_image = document.getElementById('adminNewPostImageUrl');
             if (news_image){
@@ -1709,6 +1758,19 @@ function fireCalls(page){
                         if (fileReader.readyState == 2){
                             var news_display_img = document.getElementById('news_display_img');
                             news_display_img.src = fileReader.result;
+                        }
+                    };
+                    fileReader.readAsDataURL(this.files[0]);
+                };
+            }
+            var channel_image = document.getElementById('adminProfileImg');
+            if (channel_image){
+                channel_image.onchange = function(){
+                    var fileReader = new FileReader();
+                    fileReader.onload = function(){
+                        if (fileReader.readyState == 2){
+                            var channel_display_img = document.getElementById('adminNewPostImgDisplay');
+                            channel_display_img.src = fileReader.result;
                         }
                     };
                     fileReader.readAsDataURL(this.files[0]);

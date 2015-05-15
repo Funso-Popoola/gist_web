@@ -121,6 +121,7 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
             <script src="<?php echo(Utility::getHrefFor('js/index.js')); ?>"></script>
         </div>
     </div>
+    <div class="modal-loading"></div>
     <!-- /#page-content-wrapper -->
 
 </div>

@@ -107,6 +107,7 @@ if (isset($_SESSION["user_id"]) && isset($_SESSION["user_api_key"])) {
         </form>
     </div>
 </div>
+<div class="modal-loading"></div>
 <!-- /#wrapper -->
 <!-- jQuery -->
 <script src="<?php echo(Utility::getHrefFor('js/jquery.js')); ?>"></script>
